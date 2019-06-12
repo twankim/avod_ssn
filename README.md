@@ -86,7 +86,7 @@ To train the model on clean data, see the script files `scripts/sin_test/rand_5/
 There are two types of strategies that we can use to train models for corrupted data. First, the subdirectory `scripts/sin_test/rand_5` provides scripts for *fine-tuning* the models with noisy data. Details can be found in our paper. Then, `scripts/sin_test/rand_5_full` provides the scripts for training the whole model from the scratch with corrupted data.
 
 ### Viewing Results
-All results should be saved in `/data/ktti_avod/object/outputs`. Here you should see `offline_eval` which provides text files saving different AP scores per predefined checkpoints of a model.
+All results should be saved in `/data/ktti_avod/object/outputs`. Here you should see `offline_eval` which provides text files saving different AP scores per predefined checkpoints of a model. You can also generate visualization of the corrupted sources by running a code `avod_ssn/utils_sin/viz_sample_ex.py`.
 
 ## LICENSE
 Copyright (c) 2019 [Taewan Kim](https://sites.google.com/a/utexas.edu/twankim)
