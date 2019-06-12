@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+package avod.protos;
+
+// Message for configuring DetectionModel evaluator.
+message EvalConfig {
+
+    // Evaluation intervals during training
+    optional uint32 eval_interval = 1 [default = 500];
+
+    // Evaluation mode, 'val' or 'test'
+    optional string eval_mode = 2 [default = 'val'];
+
+    // Checkpoint indices to evaluate
+    repeated int32 ckpt_indices = 3;
+
+    // Evaluate repeatedly while waiting for new checkpoints
+    optional bool evaluate_repeatedly = 4 [default = true];
+
+    // GPU options
+    optional bool allow_gpu_mem_growth = 5 [default = false];
+
+    // Kitti native evaluation
+    optional float kitti_score_threshold = 6  [default = 0.1];
+
+    // Evaluate single input noise mode
+    optional bool do_eval_sin = 7  [default = false];
+
+    // Evaluate single input noise level
+    optional float sin_level = 8  [default = 5];
+
+    // Evaluate single input noise level
+    optional string sin_type = 9  [default = 'rand'];
+
+    // Evaluate single input noise level
+    optional int32 sin_repeat = 10  [default = 1];
+
+    // Evaluate all input noise mode
+    optional bool do_eval_ain = 11  [default = false];
+}
