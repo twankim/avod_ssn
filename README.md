@@ -2,6 +2,7 @@
 This repository contains the public release of the Python implementation of our robust deep fusion models for single source robustness. We investigate learning fusion algorithms that are robust against noise added to a single source. A recent open-sourced 3D object detector [Aggregate View Object Detection (AVOD)](https://github.com/kujason/avod) is selected as a baseline algorithm to test our strategies for achieving robustness, and we modified the original implementation of the AVOD.
 
 [**On Single Source Robustness in Deep Fusion Models**](https://arxiv.org/abs/1906.04691)
+
 [Taewan Kim](https://sites.google.com/a/utexas.edu/twankim), [Joydeep Ghosh](https://www.ideal.ece.utexas.edu/ghosh/), The University of Texas at Austin
 
 If you use this code, please cite our paper:
@@ -89,7 +90,8 @@ All results should be saved in `/data/ktti_avod/object/outputs`. Here you should
 
 ## LICENSE
 Copyright (c) 2019 [Taewan Kim](https://sites.google.com/a/utexas.edu/twankim)
-Original AVOD (2018): [Jason Ku](https://github.com/kujason), [Melissa Mozifian](https://github.com/melfm), [Ali Harakeh](www.aharakeh.com), [Steven L. Waslander](http://wavelab.uwaterloo.ca)
+
+(*Original AVOD (2018): [Jason Ku](https://github.com/kujason), [Melissa Mozifian](https://github.com/melfm), [Ali Harakeh](www.aharakeh.com), [Steven L. Waslander](http://wavelab.uwaterloo.ca)*)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
