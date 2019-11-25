@@ -1,16 +1,15 @@
 # AVOD for Single Source Robustness
-This repository contains the public release of the Python implementation of our robust deep fusion models for single source robustness. We investigate learning fusion algorithms that are robust against noise added to a single source. A recent open-sourced 3D object detector [Aggregate View Object Detection (AVOD)](https://github.com/kujason/avod) is selected as a baseline algorithm to test our strategies for achieving robustness, and we modified the original implementation of the AVOD.
-
-[**On Single Source Robustness in Deep Fusion Models**](https://arxiv.org/abs/1906.04691)
+This repository contains the public release of the Python implementation of our paper [**On Single Source Robustness in Deep Fusion Models**](https://papers.nips.cc/paper/8728-on-single-source-robustness-in-deep-fusion-models), NeurIPS 2019. We investigate learning fusion algorithms that are robust against noise added to a single source. A recent open-sourced 3D object detector [Aggregate View Object Detection (AVOD)](https://github.com/kujason/avod) is selected as a baseline algorithm to test our strategies for achieving robustness, and we modified the original implementation of the AVOD.
 
 [Taewan Kim](https://sites.google.com/a/utexas.edu/twankim), [Joydeep Ghosh](https://www.ideal.ece.utexas.edu/ghosh/), The University of Texas at Austin
 
 If you use this code, please cite our paper:
 ```
-@article{kim2019single, 
-  title={On Single Source Robustness in Deep Fusion Models}, 
+@inproceedings{kim2019single,
+  title={On Single Source Robustness in Deep Fusion Models},
   author={Kim, Taewan and Ghosh, Joydeep},
-  journal={arXiv preprint arXiv:1906.04691},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={4815--4826},
   year={2019}
 }
 ```
