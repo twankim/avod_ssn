@@ -71,7 +71,7 @@ def build(layers_config,
             raise ValueError('Invalid fc layers config')
 
     # # Histogram summaries
-    # with tf.variable_scope('histograms_avod'):
+    # with tf.compat.v1.variable_scope('histograms_avod'):
     #     for fc_layer in end_points:
     #         tf.summary.histogram(fc_layer, end_points[fc_layer])
 
