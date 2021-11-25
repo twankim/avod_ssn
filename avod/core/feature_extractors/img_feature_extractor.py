@@ -24,9 +24,9 @@ class ImgFeatureExtractor:
         Returns:
             Preprocessed tensor input, resized to the output_size
         """
-        image = tf.image.resize_images(tensor_in, output_size)
+        image = tf.image.resize(tensor_in, output_size)
         image = tf.squeeze(image)
-        image = tf.to_float(image)
+        image = tf.cast(image, dtype=tf.float32)
         image_normalized = self._mean_image_subtraction(image,
                                                         [self._R_MEAN,
                                                          self._G_MEAN,

@@ -22,11 +22,11 @@ def _get_variables_to_train(trainable_scopes_list=None):
     A list of variables to train by the optimizer.
     """
     if len(trainable_scopes_list) == 0:
-        return tf.trainable_variables()
+        return tf.compat.v1.trainable_variables()
 
     variables_to_train = []
     for scope in trainable_scopes_list:
-        variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope)
+        variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, scope)
         variables_to_train.extend(variables)
     return variables_to_train
 
@@ -106,7 +106,7 @@ def train(model, train_config):
     variables_to_train = _get_variables_to_train(train_config.trainable_scopes_list)
 
     # Create the train op
-    with tf.variable_scope('train_op'):
+    with tf.compat.v1.variable_scope('train_op'):
         train_op = slim.learning.create_train_op(
             total_loss,
             training_optimizer,
@@ -115,10 +115,10 @@ def train(model, train_config):
             variables_to_train=variables_to_train)
 
     # Add the result of the train_op to the summary
-    tf.summary.scalar("training_loss", train_op)
+    tf.compat.v1.summary.scalar("training_loss", train_op)
 
     # Save checkpoints regularly.
-    saver = tf.train.Saver(max_to_keep=max_checkpoints,
+    saver = tf.compat.v1.train.Saver(max_to_keep=max_checkpoints,
                            pad_step_number=True)
 
     # Add maximum memory usage summary op
@@ -128,10 +128,10 @@ def train(model, train_config):
     if not is_travis:
         # tf.summary.scalar('bytes_in_use',
         #                   tf.contrib.memory_stats.BytesInUse())
-        tf.summary.scalar('max_bytes',
+        tf.compat.v1.summary.scalar('max_bytes',
                           tf.contrib.memory_stats.MaxBytesInUse())
 
-    summaries = set(tf.get_collection(tf.GraphKeys.SUMMARIES))
+    summaries = set(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.SUMMARIES))
     summary_merged = summary_utils.summaries_to_keep(
         summaries,
         global_summaries,
@@ -143,20 +143,20 @@ def train(model, train_config):
     allow_gpu_mem_growth = train_config.allow_gpu_mem_growth
     if allow_gpu_mem_growth:
         # GPU memory config
-        config = tf.ConfigProto()
+        config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = allow_gpu_mem_growth
-        sess = tf.Session(config=config)
+        sess = tf.compat.v1.Session(config=config)
     else:
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
 
     # Create unique folder name using datetime for summary writer
     datetime_str = str(datetime.datetime.now())
     logdir = logdir + '/train'
-    train_writer = tf.summary.FileWriter(logdir + '/' + datetime_str,
+    train_writer = tf.compat.v1.summary.FileWriter(logdir + '/' + datetime_str,
                                          sess.graph)
 
     # Create init op
-    init = tf.global_variables_initializer()
+    init = tf.compat.v1.global_variables_initializer()
 
     # Continue from last saved checkpoint
     if not train_config.overwrite_checkpoints:
@@ -177,7 +177,7 @@ def train(model, train_config):
         sess.run(init)
 
     # Read the global step if restored
-    global_step = tf.train.global_step(sess,
+    global_step = tf.compat.v1.train.global_step(sess,
                                        global_step_tensor)
     print('Starting from step {} / {}'.format(
         global_step, max_iterations))
@@ -189,7 +189,7 @@ def train(model, train_config):
 
         # Save checkpoint
         if step % checkpoint_interval == 0:
-            global_step = tf.train.global_step(sess,
+            global_step = tf.compat.v1.train.global_step(sess,
                                                global_step_tensor)
 
             saver.save(sess,

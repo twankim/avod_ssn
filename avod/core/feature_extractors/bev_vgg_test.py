@@ -24,7 +24,7 @@ def fill_feed_dict(dataset: KittiDataset, input_pl, batch_size):
     labels = sample[0].get(constants.KEY_LABEL_CLASSES)
     labels = np.expand_dims(labels, axis=1)
 
-    label_pl = tf.placeholder(tf.float32, [None, 1])
+    label_pl = tf.compat.v1.placeholder(tf.float32, [None, 1])
 
     feed_dict = {
         input_pl: bev_input,
@@ -67,12 +67,12 @@ class BevVggTest(tf.test.TestCase):
         batch_size = 1
 
         with tf.Graph().as_default():
-            with tf.name_scope('input'):
+            with tf.compat.v1.name_scope('input'):
                 # BEV image placeholder
-                image_placeholder = tf.placeholder(
+                image_placeholder = tf.compat.v1.placeholder(
                     tf.float32, (None, 700, 800, 6))
                 image_summary = tf.expand_dims(image_placeholder, axis=0)
-                tf.summary.image("image", image_summary, max_outputs=5)
+                tf.compat.v1.summary.image("image", image_summary, max_outputs=5)
 
             # Check invalid BEV shape
             bev_shape = (300, 300)
@@ -92,7 +92,7 @@ class BevVggTest(tf.test.TestCase):
                 label_pl,
                 predictions,
                 1.0)
-            loss = tf.reduce_mean(cross_entropy)
+            loss = tf.reduce_mean(input_tensor=cross_entropy)
 
             ###########################
             # Optimizer
@@ -105,8 +105,8 @@ class BevVggTest(tf.test.TestCase):
             ###########################
             train_op = slim.learning.create_train_op(loss, training_optimizer)
 
-            sess = tf.Session()
-            init = tf.global_variables_initializer()
+            sess = tf.compat.v1.Session()
+            init = tf.compat.v1.global_variables_initializer()
             sess.run(init)
 
             loss = sess.run(train_op, feed_dict=feed_dict)

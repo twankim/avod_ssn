@@ -83,16 +83,16 @@ def tf_project_to_image_space(anchors, calib_p2, image_shape, img_idx):
        to image space using the tf projection function.
     """
 
-    anchors_tensor = tf.convert_to_tensor(anchors, tf.float32)
-    calib_p2_tensor = tf.convert_to_tensor(calib_p2, tf.float32)
-    image_shape_tensor = tf.convert_to_tensor(image_shape, tf.float32)
+    anchors_tensor = tf.convert_to_tensor(value=anchors, dtype=tf.float32)
+    calib_p2_tensor = tf.convert_to_tensor(value=calib_p2, dtype=tf.float32)
+    image_shape_tensor = tf.convert_to_tensor(value=image_shape, dtype=tf.float32)
 
     projected_boxes_tensor, _ = \
         anchor_projector.tf_project_to_image_space(
             anchors_tensor,
             calib_p2_tensor,
             image_shape_tensor)
-    sess = tf.Session()
+    sess = tf.compat.v1.Session()
 
     with sess.as_default():
         projected_boxes = projected_boxes_tensor.eval()

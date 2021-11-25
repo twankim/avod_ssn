@@ -79,8 +79,8 @@ class MiniBatchUtilsTest(tf.test.TestCase):
 
         # Get max IoU, the dimension should match the anchors we are
         # evaluating
-        max_ious = tf.reduce_max(iou, axis=0)
-        max_iou_indices = tf.argmax(iou, axis=0)
+        max_ious = tf.reduce_max(input_tensor=iou, axis=0)
+        max_iou_indices = tf.argmax(input=iou, axis=0)
 
         # Sample a mini-batch from anchors with highest IoU match
         mini_batch_size = 4

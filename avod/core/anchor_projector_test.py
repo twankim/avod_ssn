@@ -91,10 +91,10 @@ class AnchorProjectorTest(unittest.TestCase):
         anchors = np.asarray([[0, 0, 3, 2, 0, 6],
                               [3, 0, 3, 2, 0, 2]],
                              dtype=np.float64)
-        tf_anchors = tf.convert_to_tensor(anchors, dtype=tf.float32)
+        tf_anchors = tf.convert_to_tensor(value=anchors, dtype=tf.float32)
 
         bev_extents = [[-5, 5], [0, 10]]
-        tf_bev_extents = tf.convert_to_tensor(bev_extents, dtype=tf.float32)
+        tf_bev_extents = tf.convert_to_tensor(value=bev_extents, dtype=tf.float32)
 
         bev_extents_range = np.diff(bev_extents, axis=1)
         bev_extents_range = np.stack([bev_extents_range,
@@ -111,7 +111,7 @@ class AnchorProjectorTest(unittest.TestCase):
         np_boxes, np_boxes_norm = \
             anchor_projector.project_to_bev(anchors, bev_extents)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             tf_boxes_out = tf_boxes.eval()
             tf_boxes_norm_out = tf_boxes_norm.eval()
@@ -142,14 +142,14 @@ class AnchorProjectorTest(unittest.TestCase):
             anchor_corners, stereo_calib_p2)
 
         # Do projection in tensor space
-        tf_anchor_corners = tf.convert_to_tensor(anchor_corners,
+        tf_anchor_corners = tf.convert_to_tensor(value=anchor_corners,
                                                  dtype=tf.float32)
-        tf_stereo_calib_p2 = tf.convert_to_tensor(stereo_calib_p2,
+        tf_stereo_calib_p2 = tf.convert_to_tensor(value=stereo_calib_p2,
                                                   dtype=tf.float32)
         tf_points_2d = anchor_projector.project_to_image_tensor(
             tf_anchor_corners, tf_stereo_calib_p2)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             points_2d_out = tf_points_2d.eval()
             np.testing.assert_allclose(
@@ -181,10 +181,10 @@ class AnchorProjectorTest(unittest.TestCase):
             anchors, stereo_calib_p2, img_shape)
 
         # convert the required params to tensors
-        tf_stereo_calib_p2 = tf.convert_to_tensor(stereo_calib_p2,
+        tf_stereo_calib_p2 = tf.convert_to_tensor(value=stereo_calib_p2,
                                                   dtype=tf.float32)
-        tf_anchors = tf.convert_to_tensor(anchors, dtype=tf.float32)
-        tf_img_shape = tf.convert_to_tensor(img_shape, dtype=tf.float32)
+        tf_anchors = tf.convert_to_tensor(value=anchors, dtype=tf.float32)
+        tf_img_shape = tf.convert_to_tensor(value=img_shape, dtype=tf.float32)
 
         # Project the 3D points in tensor space
         img_corners_tensor, img_corners_norm_tensor = \
@@ -192,7 +192,7 @@ class AnchorProjectorTest(unittest.TestCase):
                                                        tf_stereo_calib_p2,
                                                        tf_img_shape)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             img_corners_out = img_corners_tensor.eval()
             img_corners_norm_out = img_corners_norm_tensor.eval()
@@ -209,11 +209,11 @@ class AnchorProjectorTest(unittest.TestCase):
         box_corners = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
         expected_tf_corners = np.array([[2, 1, 4, 3], [6, 5, 8, 7]])
 
-        box_corner_tensor = tf.convert_to_tensor(box_corners)
+        box_corner_tensor = tf.convert_to_tensor(value=box_corners)
 
         tf_corners = \
             anchor_projector.reorder_projected_boxes(box_corner_tensor)
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             tf_corners_out = tf_corners.eval()
             np.testing.assert_array_equal(

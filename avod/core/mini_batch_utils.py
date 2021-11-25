@@ -190,9 +190,9 @@ class MiniBatchUtils:
 
             new_indicator = tf.logical_or(pos_labels, neg_labels)
 
-            num_valid = tf.reduce_sum(tf.cast(indicator, tf.int32))
+            num_valid = tf.reduce_sum(input_tensor=tf.cast(indicator, tf.int32))
             indicator = tf.cond(
-                tf.greater(num_valid, 0),
+                pred=tf.greater(num_valid, 0),
                 true_fn=lambda: tf.identity(new_indicator),
                 false_fn=lambda: tf.identity(bkg_and_neg_labels))
 
@@ -295,8 +295,8 @@ class MiniBatchUtils:
         """
 
         # mask the indices by the all_mask which is the mini_batch mask
-        masked_argmax = tf.boolean_mask(max_iou_indices,
-                                        mb_mask)
+        masked_argmax = tf.boolean_mask(tensor=max_iou_indices,
+                                        mask=mb_mask)
 
         # get the corresponding class indices that had high IoUs
         masked_labels = tf.gather(class_indices,
@@ -304,8 +304,8 @@ class MiniBatchUtils:
 
         # mask the positives by the total mask again
         # this gives us the 'True' entries
-        mask_pos_mask = tf.boolean_mask(mb_pos_mask,
-                                        mb_mask)
+        mask_pos_mask = tf.boolean_mask(tensor=mb_pos_mask,
+                                        mask=mb_mask)
 
         # multiply the masked label entries by this positives only
         # this will keep the positive class labels and sets everything else

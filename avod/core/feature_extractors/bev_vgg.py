@@ -25,9 +25,9 @@ class BevVgg(bev_feature_extractor.BevFeatureExtractor):
         """
         with slim.arg_scope([slim.conv2d, slim.fully_connected],
                             activation_fn=tf.nn.relu,
-                            weights_regularizer=slim.l2_regularizer(
-                                weight_decay),
-                            biases_initializer=tf.zeros_initializer()):
+                            weights_regularizer=tf.keras.regularizers.l2(
+                                0.5 * (weight_decay)),
+                            biases_initializer=tf.compat.v1.zeros_initializer()):
             with slim.arg_scope([slim.conv2d], padding='SAME') as arg_sc:
                 return arg_sc
 
@@ -54,7 +54,7 @@ class BevVgg(bev_feature_extractor.BevFeatureExtractor):
 
         with slim.arg_scope(self.vgg_arg_scope(
                 weight_decay=vgg_config.l2_weight_decay)):
-            with tf.variable_scope(scope, 'bev_vgg', [inputs]) as sc:
+            with tf.compat.v1.variable_scope(scope, 'bev_vgg', [inputs]) as sc:
                 end_points_collection = sc.name + '_end_points'
                 # Collect outputs for conv2d, fully_connected and max_pool2d.
                 with slim.arg_scope([slim.conv2d, slim.max_pool2d],
@@ -99,7 +99,7 @@ class BevVgg(bev_feature_extractor.BevFeatureExtractor):
                                           'is_training': is_training},
                                       scope='conv4')
 
-                with tf.variable_scope('upsampling'):
+                with tf.compat.v1.variable_scope('upsampling'):
                     # This extractor downsamples the input by a factor
                     # of 8 (3 maxpool layers)
                     downsampling_factor = 8
@@ -108,8 +108,8 @@ class BevVgg(bev_feature_extractor.BevFeatureExtractor):
                     upsampled_shape = \
                         downsampled_shape * vgg_config.upsampling_multiplier
 
-                    feature_maps_out = tf.image.resize_bilinear(
-                        net, upsampled_shape)
+                    feature_maps_out = tf.image.resize(
+                        net, upsampled_shape, method=tf.image.ResizeMethod.BILINEAR)
 
                 # Convert end_points_collection into a end_point dict.
                 end_points = slim.utils.convert_collection_to_dict(
@@ -151,7 +151,7 @@ class BevVggClassification(bev_feature_extractor.BevFeatureExtractor):
         Returns:
           the last op containing the log predictions and end_points dict.
         """
-        with tf.variable_scope(scope, 'bev_vgg', [inputs]) as sc:
+        with tf.compat.v1.variable_scope(scope, 'bev_vgg', [inputs]) as sc:
             end_points_collection = sc.name + '_end_points'
             # Collect outputs for conv2d, fully_connected and max_pool2d.
             with slim.arg_scope([slim.conv2d, slim.max_pool2d],

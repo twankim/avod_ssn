@@ -56,13 +56,13 @@ def _get_cls_loss(model, cls_logits, cls_gt):
         cls_logits, cls_gt, weight=cls_loss_weight)
 
     # Normalize by the size of the minibatch
-    with tf.variable_scope('cls_norm'):
+    with tf.compat.v1.variable_scope('cls_norm'):
         cls_loss = cls_loss / tf.cast(
-            tf.shape(cls_gt)[0], dtype=tf.float32)
+            tf.shape(input=cls_gt)[0], dtype=tf.float32)
 
     # Add summary scalar during training
     if model._train_val_test == 'train':
-        tf.summary.scalar('classification', cls_loss)
+        tf.compat.v1.summary.scalar('classification', cls_loss)
 
     return cls_loss
 
@@ -81,10 +81,10 @@ def _get_positive_mask(positive_selection, cls_softmax, cls_gt):
     """
 
     # Get argmax for predicted class
-    classification_argmax = tf.argmax(cls_softmax, axis=1)
+    classification_argmax = tf.argmax(input=cls_softmax, axis=1)
 
     # Get the ground truth class indices back from one_hot vector
-    class_indices_gt = tf.argmax(cls_gt, axis=1)
+    class_indices_gt = tf.argmax(input=cls_gt, axis=1)
 
     # Mask for which predictions are not background
     not_background_mask = tf.greater(class_indices_gt, 0)
@@ -143,42 +143,42 @@ def _get_off_ang_loss(model, offsets, offsets_gt,
         positive_mask, tf.float32)
 
     # Apply mask to only keep regression loss for positive predictions
-    pos_localization_loss = tf.reduce_sum(tf.boolean_mask(
-        anchorwise_localization_loss, positive_mask))
-    pos_orientation_loss = tf.reduce_sum(tf.boolean_mask(
-        anchorwise_orientation_loss, positive_mask))
+    pos_localization_loss = tf.reduce_sum(input_tensor=tf.boolean_mask(
+        tensor=anchorwise_localization_loss, mask=positive_mask))
+    pos_orientation_loss = tf.reduce_sum(input_tensor=tf.boolean_mask(
+        tensor=anchorwise_orientation_loss, mask=positive_mask))
 
     # Combine regression losses
     combined_reg_loss = pos_localization_loss + pos_orientation_loss
 
-    with tf.variable_scope('reg_norm'):
+    with tf.compat.v1.variable_scope('reg_norm'):
         # Normalize by the number of positive/desired classes
         # only if we have any positives
-        num_positives = tf.reduce_sum(pos_classification_floats)
+        num_positives = tf.reduce_sum(input_tensor=pos_classification_floats)
         pos_div_cond = tf.not_equal(num_positives, 0)
 
         offset_loss_norm = tf.cond(
-            pos_div_cond,
-            lambda: pos_localization_loss / num_positives,
-            lambda: tf.constant(0.0))
+            pred=pos_div_cond,
+            true_fn=lambda: pos_localization_loss / num_positives,
+            false_fn=lambda: tf.constant(0.0))
 
         ang_loss_norm = tf.cond(
-            pos_div_cond,
-            lambda: pos_orientation_loss / num_positives,
-            lambda: tf.constant(0.0))
+            pred=pos_div_cond,
+            true_fn=lambda: pos_orientation_loss / num_positives,
+            false_fn=lambda: tf.constant(0.0))
 
         final_reg_loss = tf.cond(
-            pos_div_cond,
-            lambda: combined_reg_loss / num_positives,
-            lambda: tf.constant(0.0))
+            pred=pos_div_cond,
+            true_fn=lambda: combined_reg_loss / num_positives,
+            false_fn=lambda: tf.constant(0.0))
 
     # Add summary scalars
     if model._train_val_test == 'train':
-        tf.summary.scalar('localization', offset_loss_norm)
-        tf.summary.scalar('orientation', ang_loss_norm)
-        tf.summary.scalar('regression_total', final_reg_loss)
+        tf.compat.v1.summary.scalar('localization', offset_loss_norm)
+        tf.compat.v1.summary.scalar('orientation', ang_loss_norm)
+        tf.compat.v1.summary.scalar('regression_total', final_reg_loss)
 
-        tf.summary.scalar('mb_num_positives', num_positives)
+        tf.compat.v1.summary.scalar('mb_num_positives', num_positives)
 
     return final_reg_loss, offset_loss_norm, ang_loss_norm
 
@@ -206,9 +206,9 @@ def _get_offset_only_loss(model, offsets, offsets_gt,
     anchorwise_localization_loss = weighted_smooth_l1_loss(
         offsets, offsets_gt, weight=reg_loss_weight)
 
-    classification_argmax = tf.argmax(cls_softmax, axis=1)
+    classification_argmax = tf.argmax(input=cls_softmax, axis=1)
     # Get the ground truth class indices back from one_hot vector
-    class_indices_gt = tf.argmax(cls_gt, axis=1)
+    class_indices_gt = tf.argmax(input=cls_gt, axis=1)
 
     # Mask for which predictions are not background
     not_background_mask = tf.greater(class_indices_gt, 0)
@@ -232,29 +232,29 @@ def _get_offset_only_loss(model, offsets, offsets_gt,
         pos_classification_mask, tf.float32)
 
     # Apply mask to only keep regression loss for positive predictions
-    pos_localization_loss = tf.reduce_sum(tf.boolean_mask(
-        anchorwise_localization_loss, pos_classification_mask))
+    pos_localization_loss = tf.reduce_sum(input_tensor=tf.boolean_mask(
+        tensor=anchorwise_localization_loss, mask=pos_classification_mask))
 
-    with tf.variable_scope('reg_norm'):
+    with tf.compat.v1.variable_scope('reg_norm'):
         # normalize by the number of positive/desired classes
         # only if we have any positives
-        num_positives = tf.reduce_sum(pos_classification_floats)
+        num_positives = tf.reduce_sum(input_tensor=pos_classification_floats)
         pos_div_cond = tf.not_equal(num_positives, 0)
 
         offset_loss_norm = tf.cond(
-            pos_div_cond,
-            lambda: pos_localization_loss / num_positives,
-            lambda: tf.constant(0.0))
+            pred=pos_div_cond,
+            true_fn=lambda: pos_localization_loss / num_positives,
+            false_fn=lambda: tf.constant(0.0))
 
         reg_loss = tf.cond(
-            pos_div_cond,
-            lambda: pos_localization_loss / num_positives,
-            lambda: tf.constant(0.0))
+            pred=pos_div_cond,
+            true_fn=lambda: pos_localization_loss / num_positives,
+            false_fn=lambda: tf.constant(0.0))
 
     if model._train_val_test == 'train':
-        tf.summary.scalar('localization', offset_loss_norm)
-        tf.summary.scalar('regression_total', reg_loss)
-        tf.summary.scalar('mb_num_positives', num_positives)
+        tf.compat.v1.summary.scalar('localization', offset_loss_norm)
+        tf.compat.v1.summary.scalar('regression_total', reg_loss)
+        tf.compat.v1.summary.scalar('mb_num_positives', num_positives)
 
     return reg_loss, offset_loss_norm
 
@@ -282,25 +282,25 @@ def _build_cls_off_ang_loss(model, prediction_dict):
     mb_orientations_gt = prediction_dict[model.PRED_MB_ORIENTATIONS_GT]
 
     # Decode ground truth orientations
-    with tf.variable_scope('avod_gt_angle_vectors'):
+    with tf.compat.v1.variable_scope('avod_gt_angle_vectors'):
         mb_angle_vectors_gt = \
             orientation_encoder.tf_orientation_to_angle_vector(
                 mb_orientations_gt)
 
     # Losses
-    with tf.variable_scope('avod_losses'):
-        with tf.variable_scope('classification'):
+    with tf.compat.v1.variable_scope('avod_losses'):
+        with tf.compat.v1.variable_scope('classification'):
             cls_loss = _get_cls_loss(model, mb_cls_logits, mb_cls_gt)
 
-        with tf.variable_scope('regression'):
+        with tf.compat.v1.variable_scope('regression'):
             final_reg_loss, offset_loss_norm, ang_loss_norm = _get_off_ang_loss(
                 model, mb_offsets, mb_offsets_gt,
                 mb_angle_vectors, mb_angle_vectors_gt,
                 mb_cls_softmax, mb_cls_gt)
 
-        with tf.variable_scope('avod_loss'):
+        with tf.compat.v1.variable_scope('avod_loss'):
             avod_loss = cls_loss + final_reg_loss
-            tf.summary.scalar('avod_loss', avod_loss)
+            tf.compat.v1.summary.scalar('avod_loss', avod_loss)
 
     # Loss dictionary
     losses_output = dict()
@@ -336,17 +336,17 @@ def _build_cls_off_loss(model, prediction_dict):
     mb_cls_gt = prediction_dict[model.PRED_MB_CLASSIFICATIONS_GT]
     mb_offsets_gt = prediction_dict[model.PRED_MB_OFFSETS_GT]
 
-    with tf.variable_scope('avod_losses'):
-        with tf.variable_scope('classification'):
+    with tf.compat.v1.variable_scope('avod_losses'):
+        with tf.compat.v1.variable_scope('classification'):
             cls_loss = _get_cls_loss(model, mb_cls_logits, mb_cls_gt)
 
-        with tf.variable_scope('regression'):
+        with tf.compat.v1.variable_scope('regression'):
             final_reg_loss, offset_loss_norm = _get_offset_only_loss(
                 model, mb_offsets, mb_offsets_gt, mb_cls_softmax, mb_cls_gt)
 
-        with tf.variable_scope('avod_loss'):
+        with tf.compat.v1.variable_scope('avod_loss'):
             avod_loss = cls_loss + final_reg_loss
-            tf.summary.scalar('avod_loss', avod_loss)
+            tf.compat.v1.summary.scalar('avod_loss', avod_loss)
 
     losses_output = dict()
 

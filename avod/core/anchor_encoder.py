@@ -77,15 +77,15 @@ def tf_anchor_to_offset(anchors, ground_truth):
     fc.check_anchor_format(anchors)
 
     # Make sure anchors and anchor_gts have the same shape
-    dim_cond = tf.equal(tf.shape(anchors), tf.shape(ground_truth))
+    dim_cond = tf.equal(tf.shape(input=anchors), tf.shape(input=ground_truth))
 
     with tf.control_dependencies([dim_cond]):
         t_x_gt = (ground_truth[:, 0] - anchors[:, 0]) / anchors[:, 3]
         t_y_gt = (ground_truth[:, 1] - anchors[:, 1]) / anchors[:, 4]
         t_z_gt = (ground_truth[:, 2] - anchors[:, 2]) / anchors[:, 5]
-        t_dx_gt = tf.log(ground_truth[:, 3] / anchors[:, 3])
-        t_dy_gt = tf.log(ground_truth[:, 4] / anchors[:, 4])
-        t_dz_gt = tf.log(ground_truth[:, 5] / anchors[:, 5])
+        t_dx_gt = tf.math.log(ground_truth[:, 3] / anchors[:, 3])
+        t_dy_gt = tf.math.log(ground_truth[:, 4] / anchors[:, 4])
+        t_dz_gt = tf.math.log(ground_truth[:, 5] / anchors[:, 5])
         anchor_offsets = tf.stack((t_x_gt,
                                    t_y_gt,
                                    t_z_gt,
@@ -125,11 +125,11 @@ def offset_to_anchor(anchors, offsets):
     tensor_format = isinstance(anchors, tf.Tensor)
     if tensor_format:
         # dim_x = exp(log(dim_x) + dx)
-        dx_pred = tf.exp(tf.log(anchors[:, 3]) + offsets[:, 3])
+        dx_pred = tf.exp(tf.math.log(anchors[:, 3]) + offsets[:, 3])
         # dim_y = exp(log(dim_y) + dy)
-        dy_pred = tf.exp(tf.log(anchors[:, 4]) + offsets[:, 4])
+        dy_pred = tf.exp(tf.math.log(anchors[:, 4]) + offsets[:, 4])
         # dim_z = exp(log(dim_z) + dz)
-        dz_pred = tf.exp(tf.log(anchors[:, 5]) + offsets[:, 5])
+        dz_pred = tf.exp(tf.math.log(anchors[:, 5]) + offsets[:, 5])
         anchors = tf.stack((x_pred,
                             y_pred,
                             z_pred,

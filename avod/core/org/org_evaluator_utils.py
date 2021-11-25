@@ -202,11 +202,11 @@ def set_up_summary_writer(model_config,
     logdir = logdir + '/eval'
 
     datetime_str = str(datetime.datetime.now())
-    summary_writer = tf.summary.FileWriter(logdir + '/' + datetime_str,
+    summary_writer = tf.compat.v1.summary.FileWriter(logdir + '/' + datetime_str,
                                            sess.graph)
 
     global_summaries = set([])
-    summaries = set(tf.get_collection(tf.GraphKeys.SUMMARIES))
+    summaries = set(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.SUMMARIES))
     summary_merged = summary_utils.summaries_to_keep(summaries,
                                                      global_summaries,
                                                      histograms=False,

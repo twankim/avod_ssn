@@ -19,7 +19,7 @@ def load_checkpoints(checkpoint_dir, saver):
 
 def get_global_step(sess, global_step_tensor):
     # Read the global step if restored
-    global_step = tf.train.global_step(sess,
+    global_step = tf.compat.v1.train.global_step(sess,
                                        global_step_tensor)
     return global_step
 

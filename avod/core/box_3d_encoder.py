@@ -198,7 +198,7 @@ def anchors_to_box_3d(anchors, fix_lw=False):
             masked_dimz_p = tf.multiply(box_3d_w, swap_idx_booleans)
             masked_dimz = tf.add(masked_dimz_n, masked_dimz_p)
 
-            new_orientation = tf.ones(tf.shape(box_3d_ry),
+            new_orientation = tf.ones(tf.shape(input=box_3d_ry),
                                       dtype=tf.float32)
             # Assign 90 degrees orienation
             new_orientation = tf.multiply(new_orientation,

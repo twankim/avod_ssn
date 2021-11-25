@@ -32,10 +32,10 @@ class OpsTestIndicesToDenseVector(tf.test.TestCase):
         expected_output = np.zeros(size, dtype=np.float32)
         expected_output[rand_indices] = 1.
 
-        tf_all_indices = tf.placeholder(tf.int32)
+        tf_all_indices = tf.compat.v1.placeholder(tf.int32)
         tf_rand_indices = tf.constant(rand_indices)
         indicator = ops.indices_to_dense_vector(tf_rand_indices,
-                                                tf.shape(tf_all_indices)[0])
+                                                tf.shape(input=tf_all_indices)[0])
         feed_dict = {tf_all_indices: all_indices}
 
         with self.test_session() as sess:

@@ -103,13 +103,13 @@ class Box3dEncoderTest(unittest.TestCase):
                                  [-0.59, 1.90, 25.01, 3.2, 1.61, 1.66, -1.57]],
                                 dtype=np.float32)
 
-        anchor_tensors = tf.convert_to_tensor(anchors, dtype=tf.float32)
+        anchor_tensors = tf.convert_to_tensor(value=anchors, dtype=tf.float32)
 
         boxes_3d = \
             box_3d_encoder.anchors_to_box_3d(anchor_tensors,
                                              fix_lw=True)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             boxes_3d_out = boxes_3d.eval()
             np.testing.assert_almost_equal(
@@ -127,12 +127,12 @@ class Box3dEncoderTest(unittest.TestCase):
              [-0.59, 1.90, 25.01, 1.6, 1.66, 3.20]],
             dtype=np.float32)
 
-        boxes_3d_tensors = tf.convert_to_tensor(boxes_3d,
+        boxes_3d_tensors = tf.convert_to_tensor(value=boxes_3d,
                                                 dtype=tf.float32)
 
         anchor_boxes_3d = box_3d_encoder.tf_box_3d_to_anchor(boxes_3d_tensors)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             anchors_out = anchor_boxes_3d.eval()
             np.testing.assert_almost_equal(

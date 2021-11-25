@@ -144,7 +144,7 @@ class RpnModel(model.DetectionModel):
             self._path_drop_probabilities[1] = 1.0
 
     def _add_placeholder(self, dtype, shape, name):
-        placeholder = tf.placeholder(dtype, shape, name)
+        placeholder = tf.compat.v1.placeholder(dtype, shape, name)
         self.placeholders[name] = placeholder
         return placeholder
 
@@ -155,7 +155,7 @@ class RpnModel(model.DetectionModel):
         # Combine config data
         bev_dims = np.append(self._bev_pixel_size, self._bev_depth)
 
-        with tf.variable_scope('bev_input'):
+        with tf.compat.v1.variable_scope('bev_input'):
             # Placeholder for BEV image input, to be filled in with feed_dict
             bev_input_placeholder = self._add_placeholder(tf.float32, bev_dims,
                                                           self.PL_BEV_INPUT)
@@ -170,10 +170,10 @@ class RpnModel(model.DetectionModel):
             # Summary Images
             bev_summary_images = tf.split(
                 bev_input_placeholder, self._bev_depth, axis=2)
-            tf.summary.image("bev_maps", bev_summary_images,
+            tf.compat.v1.summary.image("bev_maps", bev_summary_images,
                              max_outputs=self._bev_depth)
 
-        with tf.variable_scope('img_input'):
+        with tf.compat.v1.variable_scope('img_input'):
             # Take variable size input images
             img_input_placeholder = self._add_placeholder(
                 tf.float32,
@@ -188,10 +188,10 @@ class RpnModel(model.DetectionModel):
                     self._img_input_batches, self._img_pixel_size)
 
             # Summary Image
-            tf.summary.image("rgb_image", self._img_preprocessed,
+            tf.compat.v1.summary.image("rgb_image", self._img_preprocessed,
                              max_outputs=2)
 
-        with tf.variable_scope('pl_labels'):
+        with tf.compat.v1.variable_scope('pl_labels'):
             self._add_placeholder(tf.float32, [None, 6],
                                   self.PL_LABEL_ANCHORS)
             self._add_placeholder(tf.float32, [None, 7],
@@ -200,7 +200,7 @@ class RpnModel(model.DetectionModel):
                                   self.PL_LABEL_CLASSES)
 
         # Placeholders for anchors
-        with tf.variable_scope('pl_anchors'):
+        with tf.compat.v1.variable_scope('pl_anchors'):
             self._add_placeholder(tf.float32, [None, 6],
                                   self.PL_ANCHORS)
             self._add_placeholder(tf.float32, [None],
@@ -210,19 +210,19 @@ class RpnModel(model.DetectionModel):
             self._add_placeholder(tf.float32, [None],
                                   self.PL_ANCHOR_CLASSES)
 
-            with tf.variable_scope('bev_anchor_projections'):
+            with tf.compat.v1.variable_scope('bev_anchor_projections'):
                 self._add_placeholder(tf.float32, [None, 4],
                                       self.PL_BEV_ANCHORS)
                 self._bev_anchors_norm_pl = self._add_placeholder(
                     tf.float32, [None, 4], self.PL_BEV_ANCHORS_NORM)
 
-            with tf.variable_scope('img_anchor_projections'):
+            with tf.compat.v1.variable_scope('img_anchor_projections'):
                 self._add_placeholder(tf.float32, [None, 4],
                                       self.PL_IMG_ANCHORS)
                 self._img_anchors_norm_pl = self._add_placeholder(
                     tf.float32, [None, 4], self.PL_IMG_ANCHORS_NORM)
 
-            with tf.variable_scope('sample_info'):
+            with tf.compat.v1.variable_scope('sample_info'):
                 # the calib matrix shape is (3 x 4)
                 self._add_placeholder(
                     tf.float32, [3, 4], self.PL_CALIB_P2)
@@ -248,7 +248,7 @@ class RpnModel(model.DetectionModel):
                 self._img_pixel_size,
                 self._is_training)
 
-        with tf.variable_scope('bev_bottleneck'):
+        with tf.compat.v1.variable_scope('bev_bottleneck'):
             self.bev_bottleneck = slim.conv2d(
                 self.bev_feature_maps,
                 1, [1, 1],
@@ -257,7 +257,7 @@ class RpnModel(model.DetectionModel):
                 normalizer_params={
                     'is_training': self._is_training})
 
-        with tf.variable_scope('img_bottleneck'):
+        with tf.compat.v1.variable_scope('img_bottleneck'):
             self.img_bottleneck = slim.conv2d(
                 self.img_feature_maps,
                 1, [1, 1],
@@ -294,9 +294,9 @@ class RpnModel(model.DetectionModel):
         # path drop.
         if not (self._path_drop_probabilities[0] ==
                 self._path_drop_probabilities[1] == 1.0):
-            with tf.variable_scope('rpn_path_drop'):
+            with tf.compat.v1.variable_scope('rpn_path_drop'):
 
-                random_values = tf.random_uniform(shape=[3],
+                random_values = tf.random.uniform(shape=[3],
                                                   minval=0.0,
                                                   maxval=1.0)
 
@@ -317,13 +317,13 @@ class RpnModel(model.DetectionModel):
                 # Overwrite the division factor
                 fusion_mean_div_factor = img_mask + bev_mask
 
-        with tf.variable_scope('proposal_roi_pooling'):
+        with tf.compat.v1.variable_scope('proposal_roi_pooling'):
 
-            with tf.variable_scope('box_indices'):
+            with tf.compat.v1.variable_scope('box_indices'):
                 def get_box_indices(boxes):
                     proposals_shape = boxes.get_shape().as_list()
                     if any(dim is None for dim in proposals_shape):
-                        proposals_shape = tf.shape(boxes)
+                        proposals_shape = tf.shape(input=boxes)
                     ones_mat = tf.ones(proposals_shape[:2], dtype=tf.int32)
                     multiplier = tf.expand_dims(
                         tf.range(start=0, limit=proposals_shape[0]), 1)
@@ -348,7 +348,7 @@ class RpnModel(model.DetectionModel):
                 tf_box_indices,
                 self._proposal_roi_crop_size)
 
-        with tf.variable_scope('proposal_roi_fusion'):
+        with tf.compat.v1.variable_scope('proposal_roi_fusion'):
             rpn_fusion_out = None
             if self._fusion_method == 'mean':
                 tf_features_sum = tf.add(bev_proposal_rois, img_proposal_rois)
@@ -369,12 +369,12 @@ class RpnModel(model.DetectionModel):
                     normalizer_fn=slim.batch_norm,
                     normalizer_params={
                         'is_training': self._is_training},
-                    weights_regularizer=tf.contrib.layers.l1_regularizer(scale=0.01))
+                    weights_regularizer=tf.keras.regularizers.l1(l=0.01))
             else:
                 raise ValueError('Invalid fusion method', self._fusion_method)
 
         # TODO: move this section into an separate AnchorPredictor class
-        with tf.variable_scope('anchor_predictor', 'ap', [rpn_fusion_out]):
+        with tf.compat.v1.variable_scope('anchor_predictor', 'ap', [rpn_fusion_out]):
             tensor_in = rpn_fusion_out
 
             # Parse rpn layers config
@@ -382,7 +382,7 @@ class RpnModel(model.DetectionModel):
             l2_weight_decay = layers_config.l2_weight_decay
 
             if l2_weight_decay > 0:
-                weights_regularizer = slim.l2_regularizer(l2_weight_decay)
+                weights_regularizer = tf.keras.regularizers.l2(0.5 * (l2_weight_decay))
             else:
                 weights_regularizer = None
 
@@ -453,43 +453,43 @@ class RpnModel(model.DetectionModel):
                     name='reg_fc8/squeezed')
 
         # Histogram summaries
-        with tf.variable_scope('histograms_feature_extractor'):
-            with tf.variable_scope('bev_vgg'):
+        with tf.compat.v1.variable_scope('histograms_feature_extractor'):
+            with tf.compat.v1.variable_scope('bev_vgg'):
                 for end_point in self.bev_end_points:
-                    tf.summary.histogram(
+                    tf.compat.v1.summary.histogram(
                         end_point, self.bev_end_points[end_point])
 
-            with tf.variable_scope('img_vgg'):
+            with tf.compat.v1.variable_scope('img_vgg'):
                 for end_point in self.img_end_points:
-                    tf.summary.histogram(
+                    tf.compat.v1.summary.histogram(
                         end_point, self.img_end_points[end_point])
 
-        with tf.variable_scope('histograms_rpn'):
-            with tf.variable_scope('anchor_predictor'):
+        with tf.compat.v1.variable_scope('histograms_rpn'):
+            with tf.compat.v1.variable_scope('anchor_predictor'):
                 fc_layers = [cls_fc6, cls_fc7, cls_fc8, objectness,
                              reg_fc6, reg_fc7, reg_fc8, offsets]
                 for fc_layer in fc_layers:
                     # fix the name to avoid tf warnings
-                    tf.summary.histogram(fc_layer.name.replace(':', '_'),
+                    tf.compat.v1.summary.histogram(fc_layer.name.replace(':', '_'),
                                          fc_layer)
 
         # Return the proposals
-        with tf.variable_scope('proposals'):
+        with tf.compat.v1.variable_scope('proposals'):
             anchors = self.placeholders[self.PL_ANCHORS]
 
             # Decode anchor regression offsets
-            with tf.variable_scope('decoding'):
+            with tf.compat.v1.variable_scope('decoding'):
                 regressed_anchors = anchor_encoder.offset_to_anchor(
                         anchors, offsets)
 
-            with tf.variable_scope('bev_projection'):
+            with tf.compat.v1.variable_scope('bev_projection'):
                 _, bev_proposal_boxes_norm = anchor_projector.project_to_bev(
                     regressed_anchors, self._bev_extents)
 
-            with tf.variable_scope('softmax'):
+            with tf.compat.v1.variable_scope('softmax'):
                 objectness_softmax = tf.nn.softmax(objectness)
 
-            with tf.variable_scope('nms'):
+            with tf.compat.v1.variable_scope('nms'):
                 objectness_scores = objectness_softmax[:, 1]
 
                 # Do NMS on regressed anchors
@@ -509,7 +509,7 @@ class RpnModel(model.DetectionModel):
         all_offsets_gt = self.placeholders[self.PL_ANCHOR_OFFSETS]
         all_classes_gt = self.placeholders[self.PL_ANCHOR_CLASSES]
 
-        with tf.variable_scope('mini_batch'):
+        with tf.compat.v1.variable_scope('mini_batch'):
             mini_batch_utils = self.dataset.kitti_utils.mini_batch_utils
             mini_batch_mask, _ = \
                 mini_batch_utils.sample_rpn_mini_batch(all_ious_gt)
@@ -517,11 +517,11 @@ class RpnModel(model.DetectionModel):
         # ROI summary images
         rpn_mini_batch_size = \
             self.dataset.kitti_utils.mini_batch_utils.rpn_mini_batch_size
-        with tf.variable_scope('bev_rpn_rois'):
-            mb_bev_anchors_norm = tf.boolean_mask(self._bev_anchors_norm_pl,
-                                                  mini_batch_mask)
+        with tf.compat.v1.variable_scope('bev_rpn_rois'):
+            mb_bev_anchors_norm = tf.boolean_mask(tensor=self._bev_anchors_norm_pl,
+                                                  mask=mini_batch_mask)
             mb_bev_box_indices = tf.zeros_like(
-                tf.boolean_mask(all_classes_gt, mini_batch_mask),
+                tf.boolean_mask(tensor=all_classes_gt, mask=mini_batch_mask),
                 dtype=tf.int32)
 
             # Show the ROIs of the BEV input density map
@@ -534,16 +534,16 @@ class RpnModel(model.DetectionModel):
 
             bev_input_roi_summary_images = tf.split(
                 bev_input_rois, self._bev_depth, axis=3)
-            tf.summary.image('bev_rpn_rois',
+            tf.compat.v1.summary.image('bev_rpn_rois',
                              bev_input_roi_summary_images[-1],
                              max_outputs=rpn_mini_batch_size)
 
-        with tf.variable_scope('img_rpn_rois'):
+        with tf.compat.v1.variable_scope('img_rpn_rois'):
             # ROIs on image input
-            mb_img_anchors_norm = tf.boolean_mask(self._img_anchors_norm_pl,
-                                                  mini_batch_mask)
+            mb_img_anchors_norm = tf.boolean_mask(tensor=self._img_anchors_norm_pl,
+                                                  mask=mini_batch_mask)
             mb_img_box_indices = tf.zeros_like(
-                tf.boolean_mask(all_classes_gt, mini_batch_mask),
+                tf.boolean_mask(tensor=all_classes_gt, mask=mini_batch_mask),
                 dtype=tf.int32)
 
             # Do test ROI pooling on mini batch
@@ -553,12 +553,12 @@ class RpnModel(model.DetectionModel):
                 mb_img_box_indices,
                 (32, 32))
 
-            tf.summary.image('img_rpn_rois',
+            tf.compat.v1.summary.image('img_rpn_rois',
                              img_input_rois,
                              max_outputs=rpn_mini_batch_size)
 
         # Ground Truth Tensors
-        with tf.variable_scope('one_hot_classes'):
+        with tf.compat.v1.variable_scope('one_hot_classes'):
 
             # Anchor classification ground truth
             # Object / Not Object
@@ -574,15 +574,15 @@ class RpnModel(model.DetectionModel):
                 off_value=self._config.label_smoothing_epsilon)
 
         # Mask predictions for mini batch
-        with tf.variable_scope('prediction_mini_batch'):
-            objectness_masked = tf.boolean_mask(objectness, mini_batch_mask)
-            offsets_masked = tf.boolean_mask(offsets, mini_batch_mask)
+        with tf.compat.v1.variable_scope('prediction_mini_batch'):
+            objectness_masked = tf.boolean_mask(tensor=objectness, mask=mini_batch_mask)
+            offsets_masked = tf.boolean_mask(tensor=offsets, mask=mini_batch_mask)
 
-        with tf.variable_scope('ground_truth_mini_batch'):
+        with tf.compat.v1.variable_scope('ground_truth_mini_batch'):
             objectness_gt_masked = tf.boolean_mask(
-                objectness_gt, mini_batch_mask)
-            offsets_gt_masked = tf.boolean_mask(all_offsets_gt,
-                                                mini_batch_mask)
+                tensor=objectness_gt, mask=mini_batch_mask)
+            offsets_gt_masked = tf.boolean_mask(tensor=all_offsets_gt,
+                                                mask=mini_batch_mask)
 
         # Specify the tensors to evaluate
         predictions = dict()
@@ -913,25 +913,25 @@ class RpnModel(model.DetectionModel):
         offsets_gt = prediction_dict[self.PRED_MB_OFFSETS_GT]
 
         # Predictions
-        with tf.variable_scope('rpn_prediction_mini_batch'):
+        with tf.compat.v1.variable_scope('rpn_prediction_mini_batch'):
             objectness = prediction_dict[self.PRED_MB_OBJECTNESS]
             offsets = prediction_dict[self.PRED_MB_OFFSETS]
 
-        with tf.variable_scope('rpn_losses'):
-            with tf.variable_scope('objectness'):
+        with tf.compat.v1.variable_scope('rpn_losses'):
+            with tf.compat.v1.variable_scope('objectness'):
                 cls_loss = losses.WeightedSoftmaxLoss()
                 cls_loss_weight = self._config.loss_config.cls_loss_weight
                 objectness_loss = cls_loss(objectness,
                                            objectness_gt,
                                            weight=cls_loss_weight)
 
-                with tf.variable_scope('obj_norm'):
+                with tf.compat.v1.variable_scope('obj_norm'):
                     # normalize by the number of anchor mini-batches
                     objectness_loss = objectness_loss / tf.cast(
-                        tf.shape(objectness_gt)[0], dtype=tf.float32)
-                    tf.summary.scalar('objectness', objectness_loss)
+                        tf.shape(input=objectness_gt)[0], dtype=tf.float32)
+                    tf.compat.v1.summary.scalar('objectness', objectness_loss)
 
-            with tf.variable_scope('regression'):
+            with tf.compat.v1.variable_scope('regression'):
                 reg_loss = losses.WeightedSmoothL1Loss()
                 reg_loss_weight = self._config.loss_config.reg_loss_weight
                 anchorwise_localization_loss = reg_loss(offsets,
@@ -939,18 +939,18 @@ class RpnModel(model.DetectionModel):
                                                         weight=reg_loss_weight)
                 masked_localization_loss = \
                     anchorwise_localization_loss * objectness_gt[:, 1]
-                localization_loss = tf.reduce_sum(masked_localization_loss)
+                localization_loss = tf.reduce_sum(input_tensor=masked_localization_loss)
 
-                with tf.variable_scope('reg_norm'):
+                with tf.compat.v1.variable_scope('reg_norm'):
                     # normalize by the number of positive objects
-                    num_positives = tf.reduce_sum(objectness_gt[:, 1])
+                    num_positives = tf.reduce_sum(input_tensor=objectness_gt[:, 1])
                     # Assert the condition `num_positives > 0`
                     with tf.control_dependencies(
-                            [tf.assert_positive(num_positives)]):
+                            [tf.compat.v1.assert_positive(num_positives)]):
                         localization_loss = localization_loss / num_positives
-                        tf.summary.scalar('regression', localization_loss)
+                        tf.compat.v1.summary.scalar('regression', localization_loss)
 
-            with tf.variable_scope('total_loss'):
+            with tf.compat.v1.variable_scope('total_loss'):
                 total_loss = objectness_loss + localization_loss
 
         loss_dict = {

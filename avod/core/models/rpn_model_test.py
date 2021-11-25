@@ -36,7 +36,7 @@ class RpnModelTest(tf.test.TestCase):
         feed_dict = rpn_model.create_feed_dict()
 
         with self.test_session() as sess:
-            init = tf.global_variables_initializer()
+            init = tf.compat.v1.global_variables_initializer()
             sess.run(init)
             loss_dict_out = sess.run(loss, feed_dict=feed_dict)
             print('Losses ', loss_dict_out)
@@ -57,7 +57,7 @@ class RpnModelTest(tf.test.TestCase):
 
         # Set the random numbers for testing purposes
         rand_choice = [0.53, 0.83, 0.05]
-        rand_choice_tensor = tf.convert_to_tensor(rand_choice)
+        rand_choice_tensor = tf.convert_to_tensor(value=rand_choice)
 
         img_mask, bev_mask = rpn_model.create_path_drop_masks(
             p_img, p_bev, rand_choice_tensor)
@@ -119,7 +119,7 @@ class RpnModelTest(tf.test.TestCase):
         ##############################################
         # Let's flip the third chance and keep img instead
         rand_choice = [0.53, 0.83, 0.61]
-        rand_choice_tensor = tf.convert_to_tensor(rand_choice)
+        rand_choice_tensor = tf.convert_to_tensor(value=rand_choice)
         p_img = tf.constant(0.0)
         p_bev = tf.constant(0.1)
 
@@ -165,7 +165,7 @@ class RpnModelTest(tf.test.TestCase):
 
         # Set the random numbers for testing purposes
         rand_choice = [0.53, 0.83, 0.05]
-        rand_choice_tensor = tf.convert_to_tensor(rand_choice)
+        rand_choice_tensor = tf.convert_to_tensor(value=rand_choice)
 
         img_mask, bev_mask = rpn_model.create_path_drop_masks(
             p_img, p_bev, rand_choice_tensor)

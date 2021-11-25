@@ -69,13 +69,13 @@ class Box8cEncoderTest(unittest.TestCase):
                                        boxes_8c_2),
                                       axis=0)
 
-        anchors_box3d_tensor = tf.convert_to_tensor(anchor_boxes_3d,
+        anchors_box3d_tensor = tf.convert_to_tensor(value=anchor_boxes_3d,
                                                     dtype=tf.float32)
         # convert to 8 corners
         anchor_box_corner_tensor = \
             box_8c_encoder.tf_box_3d_to_box_8co(anchors_box3d_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             anchor_box_corner_out = anchor_box_corner_tensor.eval()
 
@@ -97,7 +97,7 @@ class Box8cEncoderTest(unittest.TestCase):
             [-7.43, 1.88, 47.55, 3.7, 1.51, 1.4, 1.55]],
             dtype=np.float32)
 
-        gt_boxes_3d_tensor = tf.convert_to_tensor(gt_boxes_3d,
+        gt_boxes_3d_tensor = tf.convert_to_tensor(value=gt_boxes_3d,
                                                   dtype=tf.float32)
 
         boxes_8c_1 = box_8c_encoder.np_box_3d_to_box_8co(gt_boxes_3d[0])
@@ -110,7 +110,7 @@ class Box8cEncoderTest(unittest.TestCase):
         boxes_c8_gt = \
             box_8c_encoder.tf_box_3d_to_box_8co(gt_boxes_3d_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             corner_box_8co_out = boxes_c8_gt.eval()
 
@@ -134,13 +134,13 @@ class Box8cEncoderTest(unittest.TestCase):
                                   [2.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0],
                                   [6.0, 1.0, 1.0, 6.0, 6.0, 1.0, 1.0, 6.0]])
 
-        irregular_box_8co_tensor = tf.convert_to_tensor(irregular_box_8co,
+        irregular_box_8co_tensor = tf.convert_to_tensor(value=irregular_box_8co,
                                                         dtype=tf.float32)
 
         aligned_box_8co = box_8c_encoder.align_boxes_8c(
             irregular_box_8co_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             aligned_box_8co_out = aligned_box_8co.eval()
 
@@ -162,12 +162,12 @@ class Box8cEncoderTest(unittest.TestCase):
                              box_8co_2),
                             axis=0)
 
-        boxes_c8_tensor = tf.convert_to_tensor(boxes_8c,
+        boxes_c8_tensor = tf.convert_to_tensor(value=boxes_8c,
                                                dtype=tf.float32)
 
         boxes_3d_tensor = box_8c_encoder.box_8c_to_box_3d(boxes_c8_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             boxes_3d_out = boxes_3d_tensor.eval()
 
@@ -192,13 +192,13 @@ class Box8cEncoderTest(unittest.TestCase):
         box_8co[0, 2] += 0.4
         box_8co[0, 6] += 0.9
 
-        box_c8_tensor = tf.convert_to_tensor(box_8co,
+        box_c8_tensor = tf.convert_to_tensor(value=box_8co,
                                              dtype=tf.float32)
         box_c8_tensor = tf.expand_dims(box_c8_tensor, axis=0)
 
         box_3d = box_8c_encoder.box_8c_to_box_3d(box_c8_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             box_3d_out = box_3d.eval()
 
@@ -217,7 +217,7 @@ class Box8cEncoderTest(unittest.TestCase):
         exp_diagonal_box1 = 3.9481
         exp_diagonal_box2 = 3.2128
 
-        boxes_3d_tensor = tf.convert_to_tensor(boxes_3d,
+        boxes_3d_tensor = tf.convert_to_tensor(value=boxes_3d,
                                                dtype=tf.float32)
 
         boxes_c8_tensor = \
@@ -228,7 +228,7 @@ class Box8cEncoderTest(unittest.TestCase):
         boxes_3d_diagonals = \
             box_3d_encoder.tf_box_3d_diagonal_length(boxes_3d_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             boxes_8c_diagonals_out = boxes_8c_diagonals.eval()
             boxes_3d_diagonals_out = boxes_3d_diagonals.eval()
@@ -272,10 +272,10 @@ class Box8cEncoderTest(unittest.TestCase):
               0.197, 0.613, -0.197, -0.613]]
         ])
 
-        boxes_3d_tensor = tf.convert_to_tensor(boxes_3d,
+        boxes_3d_tensor = tf.convert_to_tensor(value=boxes_3d,
                                                dtype=tf.float32)
 
-        boxes_3d_gt_tensor = tf.convert_to_tensor(boxes_3d_gt,
+        boxes_3d_gt_tensor = tf.convert_to_tensor(value=boxes_3d_gt,
                                                   dtype=tf.float32)
 
         boxes_8c = \
@@ -287,7 +287,7 @@ class Box8cEncoderTest(unittest.TestCase):
         normalized_offsets = box_8c_encoder.tf_box_8c_to_offsets(
             boxes_8c, boxes_8c_gt)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             normalized_offsets_out = normalized_offsets.eval()
 
@@ -307,10 +307,10 @@ class Box8cEncoderTest(unittest.TestCase):
             [-0.49, 1.78, 25.01, 3.2, 1.63, 1.61, -1.57]],
             dtype=np.float32)
 
-        boxes_3d_tensor = tf.convert_to_tensor(boxes_3d,
+        boxes_3d_tensor = tf.convert_to_tensor(value=boxes_3d,
                                                dtype=tf.float32)
 
-        boxes_3d_gt_tensor = tf.convert_to_tensor(boxes_3d_gt,
+        boxes_3d_gt_tensor = tf.convert_to_tensor(value=boxes_3d_gt,
                                                   dtype=tf.float32)
 
         boxes_8c = \
@@ -328,7 +328,7 @@ class Box8cEncoderTest(unittest.TestCase):
         boxes_8c_gt_back = box_8c_encoder.tf_offsets_to_box_8c(
             boxes_8c, normalized_offsets)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             boxes_8c_out = boxes_8c_gt_back.eval()
             boxes_8c_gt_out = boxes_8c_gt.eval()
@@ -366,17 +366,17 @@ class Box8cEncoderTest(unittest.TestCase):
             [-0.59, 1.9, 25.01, 3.2, 1.61, 1.66, 0.]],
             dtype=np.float32)
 
-        boxes_3d_tensor = tf.convert_to_tensor(boxes_3d,
+        boxes_3d_tensor = tf.convert_to_tensor(value=boxes_3d,
                                                dtype=tf.float32)
 
-        boxes_3d_gt_tensor = tf.convert_to_tensor(boxes_3d_gt,
+        boxes_3d_gt_tensor = tf.convert_to_tensor(value=boxes_3d_gt,
                                                   dtype=tf.float32)
 
         # Convert to box_8c
         boxes_8c = box_8c_encoder.tf_box_3d_to_box_8c(boxes_3d_tensor)
         boxes_8c_gt = box_8c_encoder.tf_box_3d_to_box_8c(boxes_3d_gt_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             boxes_8c_out = boxes_8c.eval()
             boxes_8c_gt_out = boxes_8c_gt.eval()

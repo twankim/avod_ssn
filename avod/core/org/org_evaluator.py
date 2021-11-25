@@ -16,7 +16,7 @@ from avod.core import trainer_utils
 from avod.core.models.avod_model import AvodModel
 from avod.core.models.rpn_model import RpnModel
 
-tf.logging.set_verbosity(tf.logging.INFO)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
 KEY_SUM_RPN_OBJ_LOSS = 'sum_rpn_obj_loss'
 KEY_SUM_RPN_REG_LOSS = 'sum_rpn_reg_loss'
@@ -100,11 +100,11 @@ class Evaluator:
         allow_gpu_mem_growth = self.eval_config.allow_gpu_mem_growth
         if allow_gpu_mem_growth:
             # GPU memory config
-            config = tf.ConfigProto()
+            config = tf.compat.v1.ConfigProto()
             config.gpu_options.allow_growth = allow_gpu_mem_growth
-            self._sess = tf.Session(config=config)
+            self._sess = tf.compat.v1.Session(config=config)
         else:
-            self._sess = tf.Session()
+            self._sess = tf.compat.v1.Session()
 
         # The model should return a dictionary of predictions
         self._prediction_dict = self.model.build()
@@ -123,7 +123,7 @@ class Evaluator:
             self.summary_writer = None
             self.summary_merged = None
 
-        self._saver = tf.train.Saver()
+        self._saver = tf.compat.v1.train.Saver()
 
         # Add maximum memory usage summary op
         # This op can only be run on device with gpu
@@ -133,7 +133,7 @@ class Evaluator:
             # tf 1.4
             # tf.summary.scalar('bytes_in_use',
             #                   tf.contrib.memory_stats.BytesInUse())
-            tf.summary.scalar('max_bytes',
+            tf.compat.v1.summary.scalar('max_bytes',
                               tf.contrib.memory_stats.MaxBytesInUse())
 
     def run_checkpoint_once(self, checkpoint_to_restore):
@@ -427,7 +427,7 @@ class Evaluator:
         if self.skip_evaluated_checkpoints:
             already_evaluated_ckpts = self.get_evaluated_ckpts(
                 self.model_config, self.full_model)
-        tf.logging.info(
+        tf.compat.v1.logging.info(
             'Starting evaluation at ' +
             time.strftime(
                 '%Y-%m-%d-%H:%M:%S',
@@ -444,7 +444,7 @@ class Evaluator:
             start = time.time()
 
             if number_of_evaluations >= num_checkpoints:
-                tf.logging.info('No new checkpoints found in %s.'
+                tf.compat.v1.logging.info('No new checkpoints found in %s.'
                                 'Will try again in %d seconds',
                                 self.checkpoint_dir,
                                 self.eval_wait_interval)

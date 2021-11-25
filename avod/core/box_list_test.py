@@ -46,7 +46,7 @@ class BoxListTest(tf.test.TestCase):
     def test_create_box_list_with_dynamic_shape(self):
         data = tf.constant(
             [[0, 0, 1, 1], [1, 1, 2, 3], [3, 4, 5, 5]], tf.float32)
-        indices = tf.reshape(tf.where(tf.greater([1, 0, 1], 0)), [-1])
+        indices = tf.reshape(tf.compat.v1.where(tf.greater([1, 0, 1], 0)), [-1])
         data = tf.gather(data, indices)
         assert data.get_shape().as_list() == [None, 4]
         expected_num_boxes = 2
@@ -84,7 +84,7 @@ class BoxListTest(tf.test.TestCase):
         self.assertEquals(type(boxes.num_boxes_static()), int)
 
     def test_num_boxes_static_for_uninferrable_shape(self):
-        placeholder = tf.placeholder(tf.float32, shape=[None, 4])
+        placeholder = tf.compat.v1.placeholder(tf.float32, shape=[None, 4])
         boxes = box_list.BoxList(placeholder)
         self.assertEquals(boxes.num_boxes_static(), None)
 

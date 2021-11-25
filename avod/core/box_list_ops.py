@@ -49,7 +49,7 @@ def area(boxlist, scope=None):
     Returns:
       a tensor with shape [N] representing box areas.
     """
-    with tf.name_scope(scope, 'Area'):
+    with tf.compat.v1.name_scope(scope, 'Area'):
         y_min, x_min, y_max, x_max = tf.split(
             value=boxlist.get(), num_or_size_splits=4, axis=1)
         return tf.squeeze((y_max - y_min) * (x_max - x_min), [1])
@@ -66,7 +66,7 @@ def height_width(boxlist, scope=None):
       Height: A tensor with shape [N] representing box heights.
       Width: A tensor with shape [N] representing box widths.
     """
-    with tf.name_scope(scope, 'HeightWidth'):
+    with tf.compat.v1.name_scope(scope, 'HeightWidth'):
         y_min, x_min, y_max, x_max = tf.split(
             value=boxlist.get(), num_or_size_splits=4, axis=1)
         return tf.squeeze(y_max - y_min, [1]), tf.squeeze(x_max - x_min, [1])
@@ -84,7 +84,7 @@ def scale(boxlist, y_scale, x_scale, scope=None):
     Returns:
       boxlist: BoxList holding N boxes
     """
-    with tf.name_scope(scope, 'Scale'):
+    with tf.compat.v1.name_scope(scope, 'Scale'):
         y_scale = tf.cast(y_scale, tf.float32)
         x_scale = tf.cast(x_scale, tf.float32)
         y_min, x_min, y_max, x_max = tf.split(
@@ -109,17 +109,17 @@ def intersection(boxlist1, boxlist2, scope=None):
     Returns:
       a tensor with shape [N, M] representing pairwise intersections
     """
-    with tf.name_scope(scope, 'Intersection'):
+    with tf.compat.v1.name_scope(scope, 'Intersection'):
         y_min1, x_min1, y_max1, x_max1 = tf.split(
             value=boxlist1.get(), num_or_size_splits=4, axis=1)
         y_min2, x_min2, y_max2, x_max2 = tf.split(
             value=boxlist2.get(), num_or_size_splits=4, axis=1)
-        all_pairs_min_ymax = tf.minimum(y_max1, tf.transpose(y_max2))
-        all_pairs_max_ymin = tf.maximum(y_min1, tf.transpose(y_min2))
+        all_pairs_min_ymax = tf.minimum(y_max1, tf.transpose(a=y_max2))
+        all_pairs_max_ymin = tf.maximum(y_min1, tf.transpose(a=y_min2))
         intersect_heights = tf.maximum(
             0.0, all_pairs_min_ymax - all_pairs_max_ymin)
-        all_pairs_min_xmax = tf.minimum(x_max1, tf.transpose(x_max2))
-        all_pairs_max_xmin = tf.maximum(x_min1, tf.transpose(x_min2))
+        all_pairs_min_xmax = tf.minimum(x_max1, tf.transpose(a=x_max2))
+        all_pairs_max_xmin = tf.maximum(x_min1, tf.transpose(a=x_min2))
         intersect_widths = tf.maximum(
             0.0, all_pairs_min_xmax - all_pairs_max_xmin)
         return intersect_heights * intersect_widths
@@ -136,7 +136,7 @@ def matched_intersection(boxlist1, boxlist2, scope=None):
     Returns:
       a tensor with shape [N] representing pairwise intersections
     """
-    with tf.name_scope(scope, 'MatchedIntersection'):
+    with tf.compat.v1.name_scope(scope, 'MatchedIntersection'):
         y_min1, x_min1, y_max1, x_max1 = tf.split(
             value=boxlist1.get(), num_or_size_splits=4, axis=1)
         y_min2, x_min2, y_max2, x_max2 = tf.split(
@@ -161,7 +161,7 @@ def iou(boxlist1, boxlist2, scope=None):
     Returns:
       a tensor with shape [N, M] representing pairwise iou scores.
     """
-    with tf.name_scope(scope, 'IOU'):
+    with tf.compat.v1.name_scope(scope, 'IOU'):
         intersections = intersection(boxlist1, boxlist2)
         areas1 = area(boxlist1)
         areas2 = area(boxlist2)
@@ -173,7 +173,7 @@ def iou(boxlist1, boxlist2, scope=None):
                 areas2,
                 0) -
             intersections)
-        return tf.where(
+        return tf.compat.v1.where(
             tf.equal(intersections, 0.0),
             tf.zeros_like(intersections), tf.truediv(intersections, unions))
 
@@ -189,12 +189,12 @@ def matched_iou(boxlist1, boxlist2, scope=None):
     Returns:
       a tensor with shape [N] representing pairwise iou scores.
     """
-    with tf.name_scope(scope, 'MatchedIOU'):
+    with tf.compat.v1.name_scope(scope, 'MatchedIOU'):
         intersections = matched_intersection(boxlist1, boxlist2)
         areas1 = area(boxlist1)
         areas2 = area(boxlist2)
         unions = areas1 + areas2 - intersections
-        return tf.where(
+        return tf.compat.v1.where(
             tf.equal(intersections, 0.0),
             tf.zeros_like(intersections), tf.truediv(intersections, unions))
 
@@ -214,7 +214,7 @@ def ioa(boxlist1, boxlist2, scope=None):
     Returns:
       a tensor with shape [N, M] representing pairwise ioa scores.
     """
-    with tf.name_scope(scope, 'IOA'):
+    with tf.compat.v1.name_scope(scope, 'IOA'):
         intersections = intersection(boxlist1, boxlist2)
         areas = tf.expand_dims(area(boxlist2), 0)
         return tf.truediv(intersections, areas)
@@ -239,11 +239,11 @@ def prune_non_overlapping_boxes(
       keep_inds: A tensor with shape [N'] indexing kept bounding boxes in the
         first input BoxList `boxlist1`.
     """
-    with tf.name_scope(scope, 'PruneNonOverlappingBoxes'):
+    with tf.compat.v1.name_scope(scope, 'PruneNonOverlappingBoxes'):
         ioa_ = ioa(boxlist2, boxlist1)  # [M, N] tensor
-        ioa_ = tf.reduce_max(ioa_, reduction_indices=[0])  # [N] tensor
+        ioa_ = tf.reduce_max(input_tensor=ioa_, axis=[0])  # [N] tensor
         keep_bool = tf.greater_equal(ioa_, tf.constant(min_overlap))
-        keep_inds = tf.squeeze(tf.where(keep_bool), squeeze_dims=[1])
+        keep_inds = tf.squeeze(tf.compat.v1.where(keep_bool), axis=[1])
         new_boxlist1 = gather(boxlist1, keep_inds)
         return new_boxlist1, keep_inds
 
@@ -259,11 +259,11 @@ def prune_small_boxes(boxlist, min_side, scope=None):
     Returns:
       A pruned boxlist.
     """
-    with tf.name_scope(scope, 'PruneSmallBoxes'):
+    with tf.compat.v1.name_scope(scope, 'PruneSmallBoxes'):
         height, width = height_width(boxlist)
         is_valid = tf.logical_and(tf.greater_equal(width, min_side),
                                   tf.greater_equal(height, min_side))
-        return gather(boxlist, tf.reshape(tf.where(is_valid), [-1]))
+        return gather(boxlist, tf.reshape(tf.compat.v1.where(is_valid), [-1]))
 
 
 def change_coordinate_frame(boxlist, window, scope=None):
@@ -286,7 +286,7 @@ def change_coordinate_frame(boxlist, window, scope=None):
     Returns:
       Returns a BoxList object with N boxes.
     """
-    with tf.name_scope(scope, 'ChangeCoordinateFrame'):
+    with tf.compat.v1.name_scope(scope, 'ChangeCoordinateFrame'):
         win_height = window[2] - window[0]
         win_width = window[3] - window[1]
         boxlist_new = scale(box_list.BoxList(
@@ -317,12 +317,12 @@ def sq_dist(boxlist1, boxlist2, scope=None):
     Returns:
       a tensor with shape [N, M] representing pairwise distances
     """
-    with tf.name_scope(scope, 'SqDist'):
-        sqnorm1 = tf.reduce_sum(tf.square(boxlist1.get()), 1, keep_dims=True)
-        sqnorm2 = tf.reduce_sum(tf.square(boxlist2.get()), 1, keep_dims=True)
+    with tf.compat.v1.name_scope(scope, 'SqDist'):
+        sqnorm1 = tf.reduce_sum(input_tensor=tf.square(boxlist1.get()), axis=1, keepdims=True)
+        sqnorm2 = tf.reduce_sum(input_tensor=tf.square(boxlist2.get()), axis=1, keepdims=True)
         innerprod = tf.matmul(boxlist1.get(), boxlist2.get(),
                               transpose_a=False, transpose_b=True)
-        return sqnorm1 + tf.transpose(sqnorm2) - 2.0 * innerprod
+        return sqnorm1 + tf.transpose(a=sqnorm2) - 2.0 * innerprod
 
 
 def boolean_mask(boxlist, indicator, fields=None, scope=None):
@@ -348,19 +348,19 @@ def boolean_mask(boxlist, indicator, fields=None, scope=None):
     Raises:
       ValueError: if `indicator` is not a rank-1 boolean tensor.
     """
-    with tf.name_scope(scope, 'BooleanMask'):
+    with tf.compat.v1.name_scope(scope, 'BooleanMask'):
         if indicator.shape.ndims != 1:
             raise ValueError('indicator should have rank 1')
         if indicator.dtype != tf.bool:
             raise ValueError('indicator should be a boolean tensor')
         subboxlist = box_list.BoxList(
-            tf.boolean_mask(boxlist.get(), indicator))
+            tf.boolean_mask(tensor=boxlist.get(), mask=indicator))
         if fields is None:
             fields = boxlist.get_extra_fields()
         for field in fields:
             if not boxlist.has_field(field):
                 raise ValueError('boxlist must contain all specified fields')
-            subfieldlist = tf.boolean_mask(boxlist.get_field(field), indicator)
+            subfieldlist = tf.boolean_mask(tensor=boxlist.get_field(field), mask=indicator)
             subboxlist.add_field(field, subfieldlist)
         return subboxlist
 
@@ -388,7 +388,7 @@ def gather(boxlist, indices, fields=None, scope=None):
       ValueError: if specified field is not contained in boxlist or if the
         indices are not of type int32
     """
-    with tf.name_scope(scope, 'Gather'):
+    with tf.compat.v1.name_scope(scope, 'Gather'):
         if len(indices.shape.as_list()) != 1:
             raise ValueError('indices should have rank 1')
         if indices.dtype != tf.int32 and indices.dtype != tf.int64:

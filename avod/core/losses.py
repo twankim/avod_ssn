@@ -42,10 +42,10 @@ class Loss(object):
         Returns:
             loss: a tensor representing the value of the loss function.
         """
-        with tf.name_scope(scope, 'Loss',
+        with tf.compat.v1.name_scope(scope, 'Loss',
                            [prediction_tensor, target_tensor, params]) as scope:
             if ignore_nan_targets:
-                target_tensor = tf.where(tf.is_nan(target_tensor),
+                target_tensor = tf.compat.v1.where(tf.math.is_nan(target_tensor),
                                          prediction_tensor,
                                          target_tensor)
             return self._compute_loss(
@@ -90,7 +90,7 @@ class WeightedL2LocalizationLoss(Loss):
         weighted_diff = (prediction_tensor - target_tensor) * tf.expand_dims(
             weights, 2)
         square_diff = 0.5 * tf.square(weighted_diff)
-        return tf.reduce_sum(square_diff)
+        return tf.reduce_sum(input_tensor=square_diff)
 
 
 class WeightedSigmoidClassificationLoss(Loss):
@@ -118,11 +118,11 @@ class WeightedSigmoidClassificationLoss(Loss):
         if class_indices is not None:
             weights *= tf.reshape(
                 ops.indices_to_dense_vector(class_indices,
-                                            tf.shape(prediction_tensor)[2]),
+                                            tf.shape(input=prediction_tensor)[2]),
                 [1, 1, -1])
         per_entry_cross_ent = (tf.nn.sigmoid_cross_entropy_with_logits(
             labels=target_tensor, logits=prediction_tensor))
-        return tf.reduce_sum(per_entry_cross_ent * weights)
+        return tf.reduce_sum(input_tensor=per_entry_cross_ent * weights)
 
 
 class WeightedSmoothL1Loss(Loss):
@@ -149,7 +149,7 @@ class WeightedSmoothL1Loss(Loss):
         abs_diff_lt_1 = tf.less(abs_diff, 1)
 
         anchorwise_smooth_l1norm = tf.reduce_sum(
-            tf.where(abs_diff_lt_1, 0.5 * tf.square(abs_diff), abs_diff - 0.5),
+            input_tensor=tf.compat.v1.where(abs_diff_lt_1, 0.5 * tf.square(abs_diff), abs_diff - 0.5),
             axis=1) * weight
         return anchorwise_smooth_l1norm
 
@@ -169,7 +169,7 @@ class WeightedSoftmaxLoss(Loss):
         """
         num_classes = prediction_tensor.get_shape().as_list()[-1]
         per_row_cross_ent = (tf.nn.softmax_cross_entropy_with_logits(
-            labels=tf.reshape(target_tensor, [-1, num_classes]),
+            labels=tf.stop_gradient(tf.reshape(target_tensor, [-1, num_classes])),
             logits=tf.reshape(prediction_tensor, [-1, num_classes])))
 
-        return tf.reduce_sum(per_row_cross_ent) * weight
+        return tf.reduce_sum(input_tensor=per_row_cross_ent) * weight

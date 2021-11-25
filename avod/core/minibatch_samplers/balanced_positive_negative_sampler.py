@@ -90,7 +90,7 @@ class BalancedPositiveNegativeSampler(minibatch_sampler.MinibatchSampler):
         max_num_pos = int(self._positive_fraction * batch_size)
         sampled_pos_idx = self.subsample_indicator(positive_idx, max_num_pos)
         max_num_neg = batch_size - tf.reduce_sum(
-            tf.cast(sampled_pos_idx, tf.int32))
+            input_tensor=tf.cast(sampled_pos_idx, tf.int32))
         sampled_neg_idx = self.subsample_indicator(negative_idx, max_num_neg)
 
         sampled_idx = tf.logical_or(sampled_pos_idx, sampled_neg_idx)

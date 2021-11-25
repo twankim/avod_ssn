@@ -310,7 +310,7 @@ def align_boxes_8c(boxes_8c):
     y_corners = boxes_8c[:, 1]
     z_corners = boxes_8c[:, 2]
 
-    min_x = tf.reduce_min(x_corners, axis=1)
+    min_x = tf.reduce_min(input_tensor=x_corners, axis=1)
 
     ##########################
     # X-Corners P3, P4, P7, P8
@@ -323,7 +323,7 @@ def align_boxes_8c(boxes_8c):
     ##########################
     # X-Corners P1, P2, P5, P6
     ##########################
-    max_x = tf.reduce_max(x_corners, axis=1)
+    max_x = tf.reduce_max(input_tensor=x_corners, axis=1)
 
     corner_x1 = max_x
     corner_x2 = max_x
@@ -333,7 +333,7 @@ def align_boxes_8c(boxes_8c):
     ##########################
     # Z-Corners P2, P3, P6, P7
     ##########################
-    min_z = tf.reduce_min(z_corners, axis=1)
+    min_z = tf.reduce_min(input_tensor=z_corners, axis=1)
 
     corner_z2 = min_z
     corner_z3 = min_z
@@ -343,7 +343,7 @@ def align_boxes_8c(boxes_8c):
     ##########################
     # Z-Corners P1, P4, P5, P6
     ##########################
-    max_z = tf.reduce_max(z_corners, axis=1)
+    max_z = tf.reduce_max(input_tensor=z_corners, axis=1)
 
     corner_z1 = max_z
     corner_z4 = max_z
@@ -355,14 +355,14 @@ def align_boxes_8c(boxes_8c):
     ##########################
     # Take the max of the four top y-corners
     # This is because y-axis is facing downwards
-    corner_max_y = tf.reduce_max(y_corners, axis=1)
+    corner_max_y = tf.reduce_max(input_tensor=y_corners, axis=1)
     corner_y1 = corner_y2 = corner_y3 = corner_y4 = corner_max_y
 
     ##########################
     # Y-Corners P5, P6, P7, P8
     ##########################
     # Take the min of the four bottom y-corners
-    corner_min_y = tf.reduce_min(y_corners, axis=1)
+    corner_min_y = tf.reduce_min(input_tensor=y_corners, axis=1)
     corner_y5 = corner_y6 = corner_y7 = corner_y8 = corner_min_y
 
     x_corners = tf.stack([corner_x1, corner_x2, corner_x3,
@@ -432,8 +432,8 @@ def box_8c_to_box_3d(box_8c):
     rys = -tf.atan2(delta_z, delta_x)
 
     # Calcuate the centroid by averaging four corners
-    center_x = tf.reduce_mean(x_corners[:, 0:4], axis=1)
-    center_z = tf.reduce_mean(z_corners[:, 0:4], axis=1)
+    center_x = tf.reduce_mean(input_tensor=x_corners[:, 0:4], axis=1)
+    center_z = tf.reduce_mean(input_tensor=z_corners[:, 0:4], axis=1)
 
     # Translate the centroid to the origin before rotation
     translated_x = box_8c[:, 0] - tf.reshape(center_x, (-1, 1))
@@ -486,8 +486,8 @@ def box_8c_to_box_3d(box_8c):
     height = corner_y1 - corner_y5
 
     # Re-calculate the centroid
-    center_x = tf.reduce_mean(new_x_corners[:, 0:4], axis=1)
-    center_z = tf.reduce_mean(new_z_corners[:, 0:4], axis=1)
+    center_x = tf.reduce_mean(input_tensor=new_x_corners[:, 0:4], axis=1)
+    center_z = tf.reduce_mean(input_tensor=new_z_corners[:, 0:4], axis=1)
     center_y = corner_y1
 
     box_3d = tf.stack([center_x, center_y, center_z,

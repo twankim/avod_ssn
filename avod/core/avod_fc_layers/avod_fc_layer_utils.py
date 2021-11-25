@@ -33,12 +33,12 @@ def feature_fusion(fusion_method, inputs, input_weights,is_training=True):
     """
 
     # Feature map fusion
-    with tf.variable_scope('fusion'):
+    with tf.compat.v1.variable_scope('fusion'):
         fused_features = None
 
         if fusion_method == 'mean':
-            rois_sum = tf.reduce_sum(inputs, axis=0)
-            rois_mean = tf.divide(rois_sum, tf.reduce_sum(input_weights))
+            rois_sum = tf.reduce_sum(input_tensor=inputs, axis=0)
+            rois_mean = tf.divide(rois_sum, tf.reduce_sum(input_tensor=input_weights))
             fused_features = rois_mean
 
         elif fusion_method == 'concat':
@@ -62,7 +62,7 @@ def feature_fusion(fusion_method, inputs, input_weights,is_training=True):
                 normalizer_fn=slim.batch_norm,
                 normalizer_params={
                     'is_training': is_training},
-                weights_regularizer=tf.contrib.layers.l1_regularizer(scale=0.01))
+                weights_regularizer=tf.keras.regularizers.l1(l=0.01))
 
         else:
             raise ValueError('Invalid fusion method', fusion_method)

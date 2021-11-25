@@ -143,7 +143,7 @@ def _early_fusion_fc_layers(num_layers, layer_sizes,
         raise ValueError('num_layers does not match length of layer_sizes')
 
     if l2_weight_decay > 0:
-        weights_regularizer = slim.l2_regularizer(l2_weight_decay)
+        weights_regularizer = tf.keras.regularizers.l2(0.5 * (l2_weight_decay))
     else:
         weights_regularizer = None
 
@@ -188,7 +188,7 @@ def _late_fusion_fc_layers(num_layers, layer_sizes,
                            is_training):
 
     if l2_weight_decay > 0:
-        weights_regularizer = slim.l2_regularizer(l2_weight_decay)
+        weights_regularizer = tf.keras.regularizers.l2(0.5 * (l2_weight_decay))
     else:
         weights_regularizer = None
 
@@ -242,7 +242,7 @@ def _deep_fusion_fc_layers(num_layers, layer_sizes,
                            is_training):
 
     if l2_weight_decay > 0:
-        weights_regularizer = slim.l2_regularizer(l2_weight_decay)
+        weights_regularizer = tf.keras.regularizers.l2(0.5 * (l2_weight_decay))
     else:
         weights_regularizer = None
 

@@ -29,9 +29,9 @@ def indices_to_dense_vector(indices,
       dense 1D Tensor of shape [size] with indices set to indices_values and the
           rest set to default_value.
     """
-    size = tf.to_int32(size)
+    size = tf.cast(size, dtype=tf.int32)
     zeros = tf.ones([size], dtype=dtype) * default_value
     values = tf.ones_like(indices, dtype=dtype) * indices_value
 
-    return tf.dynamic_stitch([tf.range(size), tf.to_int32(indices)],
+    return tf.dynamic_stitch([tf.range(size), tf.cast(indices, dtype=tf.int32)],
                              [zeros, values])

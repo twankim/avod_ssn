@@ -68,7 +68,7 @@ class FakeBatchNormClassifier(model.DetectionModel):
         """
         # trainer expects two losses, pass in a dummy one
         dummy_loss_dict = {}
-        total_loss = tf.losses.log_loss(self.tf_labels,
+        total_loss = tf.compat.v1.losses.log_loss(self.tf_labels,
                                         tf_predictions,
                                         scope='BatchNormLoss')
         return dummy_loss_dict, total_loss

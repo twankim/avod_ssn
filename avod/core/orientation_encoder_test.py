@@ -13,7 +13,7 @@ class OrientationEncoderTest(tf.test.TestCase):
                                            np.sin(np_orientations)], axis=1)
 
         # Convert to tensors and convert to angle unit vectors
-        tf_orientations = tf.convert_to_tensor(np_orientations)
+        tf_orientations = tf.convert_to_tensor(value=np_orientations)
         tf_angle_vectors = orientation_encoder.tf_orientation_to_angle_vector(
             tf_orientations)
 
@@ -34,7 +34,7 @@ class OrientationEncoderTest(tf.test.TestCase):
                                            np_angle_vectors[:, 0])
 
         # Convert to tensors and convert to orientation angles
-        tf_angle_vectors = tf.convert_to_tensor(np_angle_vectors)
+        tf_angle_vectors = tf.convert_to_tensor(value=np_angle_vectors)
         tf_orientations = orientation_encoder.tf_angle_vector_to_orientation(
             tf_angle_vectors)
 
@@ -60,7 +60,7 @@ class OrientationEncoderTest(tf.test.TestCase):
                                  -half_pi, -half_pi]
 
         # Convert to tensors and convert to orientation angles
-        tf_angle_vectors = tf.convert_to_tensor(np_angle_vectors,
+        tf_angle_vectors = tf.convert_to_tensor(value=np_angle_vectors,
                                                 dtype=tf.float64)
         tf_orientations = orientation_encoder.tf_angle_vector_to_orientation(
             tf_angle_vectors)

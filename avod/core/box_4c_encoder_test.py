@@ -165,14 +165,14 @@ class Box4cEncoderTest(unittest.TestCase):
              for box_3d in boxes_3d])
 
         # Convert to tensors
-        tf_boxes_3d = tf.convert_to_tensor(boxes_3d, dtype=tf.float32)
-        tf_ground_plane = tf.convert_to_tensor(ground_plane, dtype=tf.float32)
+        tf_boxes_3d = tf.convert_to_tensor(value=boxes_3d, dtype=tf.float32)
+        tf_ground_plane = tf.convert_to_tensor(value=ground_plane, dtype=tf.float32)
 
         # Tensorflow conversion box_3d to box_4c
         tf_boxes_4c = box_4c_encoder.tf_box_3d_to_box_4c(tf_boxes_3d,
                                                          tf_ground_plane)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             tf_boxes_4c_out = tf_boxes_4c.eval()
 
@@ -219,15 +219,15 @@ class Box4cEncoderTest(unittest.TestCase):
                                                           np_ground_plane)
                        for box_4c in np_boxes_4c]
 
-        tf_boxes_4c = tf.convert_to_tensor(np_boxes_4c,
+        tf_boxes_4c = tf.convert_to_tensor(value=np_boxes_4c,
                                            dtype=tf.float32)
-        tf_ground_plane = tf.convert_to_tensor(np_ground_plane,
+        tf_ground_plane = tf.convert_to_tensor(value=np_ground_plane,
                                                dtype=tf.float32)
 
         tf_boxes_3d = box_4c_encoder.tf_box_4c_to_box_3d(tf_boxes_4c,
                                                          tf_ground_plane)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             tf_boxes_3d_out = tf_boxes_3d.eval()
 

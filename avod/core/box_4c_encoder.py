@@ -329,30 +329,30 @@ def calculate_box_3d_info(vec_dir, vec_dir_mag,
     vec_mid_p3 = p3 - midpoint
     vec_mid_p4 = p4 - midpoint
 
-    l1 = tf.reduce_sum(tf.multiply(vec_mid_p1, vec_dir_norm), axis=1)
-    l2 = tf.reduce_sum(tf.multiply(vec_mid_p2, vec_dir_norm), axis=1)
-    l3 = tf.reduce_sum(tf.multiply(vec_mid_p3, vec_dir_norm), axis=1)
-    l4 = tf.reduce_sum(tf.multiply(vec_mid_p4, vec_dir_norm), axis=1)
+    l1 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p1, vec_dir_norm), axis=1)
+    l2 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p2, vec_dir_norm), axis=1)
+    l3 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p3, vec_dir_norm), axis=1)
+    l4 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p4, vec_dir_norm), axis=1)
     all_lengths = tf.stack([l1, l2, l3, l4], axis=1)
 
-    min_l = tf.reduce_min(all_lengths, axis=1, keep_dims=True)
-    max_l = tf.reduce_max(all_lengths, axis=1, keep_dims=True)
+    min_l = tf.reduce_min(input_tensor=all_lengths, axis=1, keepdims=True)
+    max_l = tf.reduce_max(input_tensor=all_lengths, axis=1, keepdims=True)
     length_out = max_l - min_l
 
     vec_dir_ortho_norm = tf.stack([-vec_dir_norm[:, 1],
                                    vec_dir_norm[:, 0]], axis=1)
-    w1 = tf.reduce_sum(tf.multiply(vec_mid_p1,
+    w1 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p1,
                                    vec_dir_ortho_norm), axis=1)
-    w2 = tf.reduce_sum(tf.multiply(vec_mid_p2,
+    w2 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p2,
                                    vec_dir_ortho_norm), axis=1)
-    w3 = tf.reduce_sum(tf.multiply(vec_mid_p3,
+    w3 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p3,
                                    vec_dir_ortho_norm), axis=1)
-    w4 = tf.reduce_sum(tf.multiply(vec_mid_p4,
+    w4 = tf.reduce_sum(input_tensor=tf.multiply(vec_mid_p4,
                                    vec_dir_ortho_norm), axis=1)
     all_widths = tf.stack([w1, w2, w3, w4], axis=1)
 
-    min_w = tf.reduce_min(all_widths, axis=1)
-    max_w = tf.reduce_max(all_widths, axis=1)
+    min_w = tf.reduce_min(input_tensor=all_widths, axis=1)
+    max_w = tf.reduce_max(input_tensor=all_widths, axis=1)
     w_diff = tf.reshape(max_w + min_w, [-1, 1])
     width_out = tf.reshape(max_w - min_w, [-1, 1])
 
@@ -394,10 +394,10 @@ def tf_box_4c_to_box_3d(boxes_4c, ground_plane):
 
     # Check which direction is longer
     vec_34_12 = midpoint_12 - midpoint_34
-    vec_34_12_mag = tf.norm(vec_34_12, axis=1)
+    vec_34_12_mag = tf.norm(tensor=vec_34_12, axis=1)
 
     vec_23_14 = midpoint_14 - midpoint_23
-    vec_23_14_mag = tf.norm(vec_23_14, axis=1)
+    vec_23_14_mag = tf.norm(tensor=vec_23_14, axis=1)
 
     # Calculate both possibilities (vec_34_12_mag or vec_23_14_mag),
     # then mask out the values from the shorter direction

@@ -337,7 +337,7 @@ class BoxListOpsTest(tf.test.TestCase):
              4 * [3.0],
              4 * [4.0]])
         weights = tf.constant([.5, .3, .7, .1, .9], tf.float32)
-        indices = tf.reshape(tf.where(tf.greater(weights, 0.4)), [-1])
+        indices = tf.reshape(tf.compat.v1.where(tf.greater(weights, 0.4)), [-1])
         expected_subset = [4 * [0.0], 4 * [2.0], 4 * [4.0]]
         expected_weights = [.5, .7, .9]
 

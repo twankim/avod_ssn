@@ -79,15 +79,15 @@ class MinibatchSampler(object):
         Returns:
           a boolean tensor with the same shape as input (indicator) tensor
         """
-        indices = tf.where(indicator)
-        indices = tf.random_shuffle(indices)
+        indices = tf.compat.v1.where(indicator)
+        indices = tf.random.shuffle(indices)
         indices = tf.reshape(indices, [-1])
 
-        num_samples = tf.minimum(tf.size(indices), num_samples)
+        num_samples = tf.minimum(tf.size(input=indices), num_samples)
         selected_indices = tf.slice(indices, [0], tf.reshape(num_samples, [1]))
 
         selected_indicator = ops.indices_to_dense_vector(selected_indices,
-                                                         tf.shape(indicator)[
+                                                         tf.shape(input=indicator)[
                                                              0])
 
         return tf.equal(selected_indicator, 1)

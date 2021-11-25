@@ -36,7 +36,7 @@ class AnchorEncoderTest(unittest.TestCase):
                               [0, 0, 0, 2, 3, 1]], dtype=np.float32)
 
         anchors_tensor = \
-            tf.convert_to_tensor(anchors, dtype=tf.float32)
+            tf.convert_to_tensor(value=anchors, dtype=tf.float32)
 
         # we expect this in matrix format for the tensor version
         # of this function. In this case, it's just a repeated
@@ -46,7 +46,7 @@ class AnchorEncoderTest(unittest.TestCase):
                       [2.0,  1.5,  7.0,  1.0,  0.5,  1.8]])
 
         anchors_gt_tensor = \
-            tf.convert_to_tensor(anchors_gt, dtype=tf.float32)
+            tf.convert_to_tensor(value=anchors_gt, dtype=tf.float32)
 
         expected_offsets = np.array(
             [[0.25, -0.083, 0.8, -1.386, -2.484, -1.022],
@@ -57,7 +57,7 @@ class AnchorEncoderTest(unittest.TestCase):
         anchor_offsets = anchor_encoder.tf_anchor_to_offset(anchors_tensor,
                                                             anchors_gt_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             anchor_offsets_out = anchor_offsets.eval()
             np.testing.assert_almost_equal(anchor_offsets_out,
@@ -94,7 +94,7 @@ class AnchorEncoderTest(unittest.TestCase):
                               [0, 0, 0, 2, 3, 1]], dtype=np.float32)
 
         anchor_tensor = \
-            tf.convert_to_tensor(anchors, dtype=tf.float32)
+            tf.convert_to_tensor(value=anchors, dtype=tf.float32)
 
         # anchor offset prediction is [tx, ty, tz, tdim_x, tdim_y, tdim_z]
         anchor_offsets = np.array(
@@ -103,7 +103,7 @@ class AnchorEncoderTest(unittest.TestCase):
             dtype=np.float32)
 
         anchor_offset_tensor = \
-            tf.convert_to_tensor(anchor_offsets, dtype=tf.float32)
+            tf.convert_to_tensor(value=anchor_offsets, dtype=tf.float32)
 
         expected_anchors = np.array(
             [[3.0, 2.12, 3.05, 4.420, 8.9509, 5.152],
@@ -113,7 +113,7 @@ class AnchorEncoderTest(unittest.TestCase):
         anchors_tensor = anchor_encoder.offset_to_anchor(
             anchor_tensor, anchor_offset_tensor)
 
-        sess = tf.Session()
+        sess = tf.compat.v1.Session()
         with sess.as_default():
             anchors = anchors_tensor.eval()
 

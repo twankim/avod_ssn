@@ -190,7 +190,7 @@ def tf_project_to_image_space(anchors, stereo_calib_p2, image_shape):
     dim_z_half = dim_z / 2.
 
     # Calculate 3D BB corners
-    x_corners = tf.reshape(tf.transpose(tf.stack([x + dim_x_half,
+    x_corners = tf.reshape(tf.transpose(a=tf.stack([x + dim_x_half,
                                                   x + dim_x_half,
                                                   x - dim_x_half,
                                                   x - dim_x_half,
@@ -199,7 +199,7 @@ def tf_project_to_image_space(anchors, stereo_calib_p2, image_shape):
                                                   x - dim_x_half,
                                                   x - dim_x_half])), (1, -1))
 
-    y_corners = tf.reshape(tf.transpose(tf.stack([y,
+    y_corners = tf.reshape(tf.transpose(a=tf.stack([y,
                                                   y,
                                                   y,
                                                   y,
@@ -208,7 +208,7 @@ def tf_project_to_image_space(anchors, stereo_calib_p2, image_shape):
                                                   y - dim_y,
                                                   y - dim_y])), (1, -1))
 
-    z_corners = tf.reshape(tf.transpose(tf.stack([z + dim_z_half,
+    z_corners = tf.reshape(tf.transpose(a=tf.stack([z + dim_z_half,
                                                   z - dim_z_half,
                                                   z - dim_z_half,
                                                   z + dim_z_half,
@@ -224,17 +224,17 @@ def tf_project_to_image_space(anchors, stereo_calib_p2, image_shape):
 
     # Get the min and maxes of image coordinates
     i_axis_min_points = tf.reduce_min(
-        tf.reshape(pts_2d[0, :], (-1, 8)), axis=1)
+        input_tensor=tf.reshape(pts_2d[0, :], (-1, 8)), axis=1)
     j_axis_min_points = tf.reduce_min(
-        tf.reshape(pts_2d[1, :], (-1, 8)), axis=1)
+        input_tensor=tf.reshape(pts_2d[1, :], (-1, 8)), axis=1)
 
     i_axis_max_points = tf.reduce_max(
-        tf.reshape(pts_2d[0, :], (-1, 8)), axis=1)
+        input_tensor=tf.reshape(pts_2d[0, :], (-1, 8)), axis=1)
     j_axis_max_points = tf.reduce_max(
-        tf.reshape(pts_2d[1, :], (-1, 8)), axis=1)
+        input_tensor=tf.reshape(pts_2d[1, :], (-1, 8)), axis=1)
 
     box_corners = tf.transpose(
-        tf.stack(
+        a=tf.stack(
             [i_axis_min_points, j_axis_min_points, i_axis_max_points,
              j_axis_max_points],
             axis=0))
@@ -286,7 +286,7 @@ def project_to_image_tensor(points_3d, cam_p2_matrix):
             This is the projected 3D points into 2D .i.e. corresponding
             3D points in image coordinates.
     """
-    ones_column = tf.ones([1, tf.shape(points_3d)[1]])
+    ones_column = tf.ones([1, tf.shape(input=points_3d)[1]])
 
     # Add extra column of ones
     points_3d_concat = tf.concat([points_3d, ones_column], axis=0)

@@ -43,7 +43,7 @@ def build(optimizer_config,
 
     if optimizer_type == 'rms_prop_optimizer':
         config = optimizer_config.rms_prop_optimizer
-        optimizer = tf.train.RMSPropOptimizer(
+        optimizer = tf.compat.v1.train.RMSPropOptimizer(
             _create_learning_rate(config.learning_rate,
                                   global_summaries,
                                   global_step),
@@ -53,7 +53,7 @@ def build(optimizer_config,
 
     elif optimizer_type == 'momentum_optimizer':
         config = optimizer_config.momentum_optimizer
-        optimizer = tf.train.MomentumOptimizer(
+        optimizer = tf.compat.v1.train.MomentumOptimizer(
             _create_learning_rate(config.learning_rate,
                                   global_summaries,
                                   global_step),
@@ -61,14 +61,14 @@ def build(optimizer_config,
 
     elif optimizer_type == 'adam_optimizer':
         config = optimizer_config.adam_optimizer
-        optimizer = tf.train.AdamOptimizer(
+        optimizer = tf.compat.v1.train.AdamOptimizer(
             _create_learning_rate(config.learning_rate,
                                   global_summaries,
                                   global_step))
 
     elif optimizer_type == 'gradient_descent':
         config = optimizer_config.gradient_descent
-        optimizer = tf.train.GradientDescentOptimizer(
+        optimizer = tf.compat.v1.train.GradientDescentOptimizer(
             _create_learning_rate(config.learning_rate,
                                   global_summaries,
                                   global_step))
@@ -107,7 +107,7 @@ def _create_learning_rate(learning_rate_config,
 
     elif learning_rate_type == 'exponential_decay_learning_rate':
         config = learning_rate_config.exponential_decay_learning_rate
-        learning_rate = tf.train.exponential_decay(
+        learning_rate = tf.compat.v1.train.exponential_decay(
             config.initial_learning_rate,
             global_step,
             config.decay_steps,
@@ -117,5 +117,5 @@ def _create_learning_rate(learning_rate_config,
     if learning_rate is None:
         raise ValueError('Learning_rate %s not supported.' % learning_rate_type)
 
-    global_summaries.add(tf.summary.scalar('Learning_Rate', learning_rate))
+    global_summaries.add(tf.compat.v1.summary.scalar('Learning_Rate', learning_rate))
     return learning_rate

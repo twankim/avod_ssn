@@ -21,7 +21,7 @@ class BevFeatureExtractor:
 
         # Only reshape if input shape does not match
         if not tensor_in.shape[1:3] == output_shape:
-            return tf.image.resize_images(tensor_in, output_shape)
+            return tf.image.resize(tensor_in, output_shape)
 
         return tensor_in
 

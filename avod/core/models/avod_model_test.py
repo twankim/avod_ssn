@@ -36,7 +36,7 @@ class AvodModelTest(tf.test.TestCase):
         feed_dict = avod_model.create_feed_dict()
 
         with self.test_session() as sess:
-            init = tf.global_variables_initializer()
+            init = tf.compat.v1.global_variables_initializer()
             sess.run(init)
             loss_dict_out = sess.run(loss, feed_dict=feed_dict)
             print('Losses ', loss_dict_out)
@@ -101,17 +101,17 @@ class AvodModelTest(tf.test.TestCase):
                                               0.0], dtype=np.float32)
         exp_num_positives = 1
 
-        classifications_tensor = tf.convert_to_tensor(classifications,
+        classifications_tensor = tf.convert_to_tensor(value=classifications,
                                                       dtype=tf.float32)
 
-        classifications_gt_tensor = tf.convert_to_tensor(classifications_gt,
+        classifications_gt_tensor = tf.convert_to_tensor(value=classifications_gt,
                                                          dtype=tf.float32)
 
-        regression_tensor = tf.convert_to_tensor(regressions,
+        regression_tensor = tf.convert_to_tensor(value=regressions,
                                                  dtype=tf.float32)
 
-        classification_argmax = tf.argmax(classifications_tensor, axis=1)
-        class_indices_gt = tf.argmax(classifications_gt_tensor, axis=1)
+        classification_argmax = tf.argmax(input=classifications_tensor, axis=1)
+        class_indices_gt = tf.argmax(input=classifications_gt_tensor, axis=1)
 
         correct_classifications_mask = tf.equal(classification_argmax,
                                                 class_indices_gt)
@@ -128,7 +128,7 @@ class AvodModelTest(tf.test.TestCase):
 
         pos_regressions = regression_tensor * \
             pos_classification_floats
-        num_positives = tf.reduce_sum(pos_classification_floats)
+        num_positives = tf.reduce_sum(input_tensor=pos_classification_floats)
 
         with self.test_session() as sess:
             # Check correct and positive classification masks
@@ -172,11 +172,11 @@ class AvodModelTest(tf.test.TestCase):
         # Convert to tensors
         tf_pos_classification_floats = tf.cast(pos_classification_mask,
                                                dtype=tf.float32)
-        tf_offsets = tf.convert_to_tensor(offsets, dtype=tf.float32)
-        tf_offsets_gt = tf.convert_to_tensor(offsets_gt, dtype=tf.float32)
-        tf_angle_vectors = tf.convert_to_tensor(angle_vectors,
+        tf_offsets = tf.convert_to_tensor(value=offsets, dtype=tf.float32)
+        tf_offsets_gt = tf.convert_to_tensor(value=offsets_gt, dtype=tf.float32)
+        tf_angle_vectors = tf.convert_to_tensor(value=angle_vectors,
                                                 dtype=tf.float32)
-        tf_angle_vectors_gt = tf.convert_to_tensor(angle_vectors_gt,
+        tf_angle_vectors_gt = tf.convert_to_tensor(value=angle_vectors_gt,
                                                    dtype=tf.float32)
 
         reg_loss = losses.WeightedSmoothL1Loss()
@@ -193,10 +193,10 @@ class AvodModelTest(tf.test.TestCase):
             tf_pos_classification_floats
 
         # Masking with tf.boolean_mask
-        pos_localization_loss = tf.reduce_sum(tf.boolean_mask(
-            anchorwise_loc_loss, pos_classification_mask))
-        pos_orientation_loss = tf.reduce_sum(tf.boolean_mask(
-            anchorwise_ang_loss, pos_classification_mask))
+        pos_localization_loss = tf.reduce_sum(input_tensor=tf.boolean_mask(
+            tensor=anchorwise_loc_loss, mask=pos_classification_mask))
+        pos_orientation_loss = tf.reduce_sum(input_tensor=tf.boolean_mask(
+            tensor=anchorwise_ang_loss, mask=pos_classification_mask))
         combined_reg_loss = pos_localization_loss + pos_orientation_loss
 
         with self.test_session() as sess:

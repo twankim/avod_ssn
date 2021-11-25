@@ -34,7 +34,7 @@ def build(layers_config,
     # Default all output layers to None
     cls_logits = offsets = angle_vectors = end_points = None
 
-    with tf.variable_scope('box_predictor') as sc:
+    with tf.compat.v1.variable_scope('box_predictor') as sc:
         end_points_collection = sc.name + '_end_points'
 
         fc_layers_type = layers_config.WhichOneof('fc_layers')

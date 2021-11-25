@@ -15,7 +15,7 @@ from avod.core.models.avod_model import AvodModel
 from avod.core.models.rpn_model import RpnModel
 from avod.core.evaluator import Evaluator
 
-tf.logging.set_verbosity(tf.logging.ERROR)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 def evaluate(model_config, eval_config, dataset_config, output_dir=None):
 
@@ -140,4 +140,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()

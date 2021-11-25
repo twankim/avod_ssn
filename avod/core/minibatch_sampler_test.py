@@ -36,7 +36,7 @@ class MinibatchSamplerTest(tf.test.TestCase):
 
     def test_subsample_when_more_true_elements_than_num_samples_no_shape(self):
         np_indicator = [True, False, True, False, True, True, False]
-        indicator = tf.placeholder(tf.bool)
+        indicator = tf.compat.v1.placeholder(tf.bool)
         feed_dict = {indicator: np_indicator}
 
         samples = minibatch_sampler.MinibatchSampler.subsample_indicator(

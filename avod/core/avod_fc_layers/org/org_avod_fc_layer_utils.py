@@ -32,12 +32,12 @@ def feature_fusion(fusion_method, inputs, input_weights):
     """
 
     # Feature map fusion
-    with tf.variable_scope('fusion'):
+    with tf.compat.v1.variable_scope('fusion'):
         fused_features = None
 
         if fusion_method == 'mean':
-            rois_sum = tf.reduce_sum(inputs, axis=0)
-            rois_mean = tf.divide(rois_sum, tf.reduce_sum(input_weights))
+            rois_sum = tf.reduce_sum(input_tensor=inputs, axis=0)
+            rois_mean = tf.divide(rois_sum, tf.reduce_sum(input_tensor=input_weights))
             fused_features = rois_mean
 
         elif fusion_method == 'concat':

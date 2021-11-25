@@ -21,9 +21,9 @@ class ImgVggPyr(img_feature_extractor.ImgFeatureExtractor):
         """
         with slim.arg_scope([slim.conv2d, slim.fully_connected],
                             activation_fn=tf.nn.relu,
-                            weights_regularizer=slim.l2_regularizer(
-                                weight_decay),
-                            biases_initializer=tf.zeros_initializer()):
+                            weights_regularizer=tf.keras.regularizers.l2(
+                                0.5 * (weight_decay)),
+                            biases_initializer=tf.compat.v1.zeros_initializer()):
             with slim.arg_scope([slim.conv2d], padding='SAME') as arg_sc:
                 return arg_sc
 
@@ -47,7 +47,7 @@ class ImgVggPyr(img_feature_extractor.ImgFeatureExtractor):
 
         with slim.arg_scope(self.vgg_arg_scope(
                 weight_decay=vgg_config.l2_weight_decay)):
-            with tf.variable_scope(scope, 'img_vgg_pyr', [inputs]) as sc:
+            with tf.compat.v1.variable_scope(scope, 'img_vgg_pyr', [inputs]) as sc:
                 end_points_collection = sc.name + '_end_points'
 
                 # Collect outputs for conv2d, fully_connected and max_pool2d.

@@ -14,7 +14,7 @@ from avod.core import trainer_utils
 
 slim = tf.contrib.slim
 
-tf.logging.set_verbosity(tf.logging.ERROR)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 
 class TrainerUtilsTest(tf.test.TestCase):
@@ -53,10 +53,10 @@ class TrainerUtilsTest(tf.test.TestCase):
             rpn_checkpoint_dir = paths_config.checkpoint_dir
 
             # load the weights back in
-            init_op = tf.global_variables_initializer()
+            init_op = tf.compat.v1.global_variables_initializer()
 
-            saver = tf.train.Saver()
-            with tf.Session() as sess:
+            saver = tf.compat.v1.train.Saver()
+            with tf.compat.v1.Session() as sess:
                 sess.run(init_op)
 
                 trainer_utils.load_checkpoints(rpn_checkpoint_dir, saver)
@@ -75,10 +75,10 @@ class TrainerUtilsTest(tf.test.TestCase):
             model.build()
 
             # load the weights back in
-            init_op = tf.global_variables_initializer()
+            init_op = tf.compat.v1.global_variables_initializer()
 
-            saver = tf.train.Saver()
-            with tf.Session() as sess:
+            saver = tf.compat.v1.train.Saver()
+            with tf.compat.v1.Session() as sess:
                 sess.run(init_op)
 
                 trainer_utils.load_checkpoints(rpn_checkpoint_dir, saver)
@@ -122,7 +122,7 @@ class TrainerUtilsTest(tf.test.TestCase):
 
         with tf.Graph().as_default():
             # Set a graph-level seed
-            tf.set_random_seed(1245)
+            tf.compat.v1.set_random_seed(1245)
             model = RpnModel(model_config,
                              train_val_test=train_val_test,
                              dataset=self.dataset)
@@ -138,9 +138,9 @@ class TrainerUtilsTest(tf.test.TestCase):
                 total_loss,
                 training_optimizer)
 
-            init_op = tf.global_variables_initializer()
+            init_op = tf.compat.v1.global_variables_initializer()
 
-            with tf.Session() as sess:
+            with tf.compat.v1.Session() as sess:
                 sess.run(init_op)
                 for step in range(1, self.train_config.max_iterations):
                     feed_dict = model.create_feed_dict()
