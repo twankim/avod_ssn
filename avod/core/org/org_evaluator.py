@@ -131,7 +131,7 @@ class Evaluator:
         is_travis = 'TRAVIS' in os.environ
         if not is_travis:
             # tf 1.4
-            # tf.summary.scalar('bytes_in_use',
+            # tf.compat.v1.summary.scalar('bytes_in_use',
             #                   tf.contrib.memory_stats.BytesInUse())
             tf.compat.v1.summary.scalar('max_bytes',
                               tf.contrib.memory_stats.MaxBytesInUse())
