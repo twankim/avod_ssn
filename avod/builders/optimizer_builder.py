@@ -17,7 +17,7 @@
 
 import tensorflow as tf
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 
 def build(optimizer_config,

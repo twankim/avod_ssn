@@ -8,7 +8,7 @@ import tensorflow as tf
 from wavedata.tools.core import calib_utils
 
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 _USE_GLOBAL_STEP = 0
 

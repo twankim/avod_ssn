@@ -12,7 +12,7 @@ from avod.builders import optimizer_builder
 from avod.core import trainer_utils
 from avod.core import summary_utils
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 
 def train(model, train_config):

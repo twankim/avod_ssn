@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 
 def load_checkpoints(checkpoint_dir, saver):

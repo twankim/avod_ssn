@@ -8,7 +8,7 @@ import tensorflow as tf
 
 from avod.core.feature_extractors import img_feature_extractor
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 
 class ImgVgg(img_feature_extractor.ImgFeatureExtractor):

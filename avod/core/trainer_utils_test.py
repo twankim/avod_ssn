@@ -12,7 +12,7 @@ from avod.core.models.avod_model import AvodModel
 from avod.core import trainer
 from avod.core import trainer_utils
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 

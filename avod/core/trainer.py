@@ -14,7 +14,7 @@ from avod.core import summary_utils
 
 from utils_sin.sin_utils import SINFields
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 def _get_variables_to_train(trainable_scopes_list=None):
     """Returns a list of variables to train.

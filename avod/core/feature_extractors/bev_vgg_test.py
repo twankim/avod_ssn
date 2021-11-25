@@ -12,7 +12,7 @@ from avod.core.feature_extractors import bev_vgg as vgg
 from avod.datasets.kitti.kitti_dataset import KittiDataset
 from avod.protos import train_pb2
 
-slim = tf.contrib.slim
+import tf_slim as slim
 
 
 def fill_feed_dict(dataset: KittiDataset, input_pl, batch_size):
