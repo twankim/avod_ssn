@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.contrib import slim
+import tf_slim as slim
 
 OFFSETS_OUTPUT_SIZE = {
     'box_3d': 6,

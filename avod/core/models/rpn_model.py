@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib import slim
+import tf_slim as slim
 
 from avod.builders import feature_extractor_builder
 from avod.core import anchor_encoder
