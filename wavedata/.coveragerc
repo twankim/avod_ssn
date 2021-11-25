@@ -1,3 +1,0 @@
-[report]
-omit = */__init__.py, */test_*.py, scripts/*
-

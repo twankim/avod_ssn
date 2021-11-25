@@ -1,9 +1,0 @@
-__pycache__
-*.pyc
-
-# PyCharm
-.idea
-
-# Coverage related
-*.coverage
-htmlcov

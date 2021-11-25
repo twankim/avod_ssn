@@ -1,9 +1,0 @@
-coverage
-livereload
-matplotlib
-numpy
-opencv-python
-pandas
-pillow
-pypng
-scipy
