@@ -151,12 +151,12 @@ class Evaluator:
         # This op can only be run on device with gpu
         # so it's skipped on travis
         is_travis = 'TRAVIS' in os.environ
-        if not is_travis:
-            # tf 1.4
-            # tf.compat.v1.summary.scalar('bytes_in_use',
-            #                   tf.contrib.memory_stats.BytesInUse())
-            tf.compat.v1.summary.scalar('max_bytes',
-                              tf.contrib.memory_stats.MaxBytesInUse())
+        # if not is_travis:
+        #     # tf 1.4
+        #     # tf.compat.v1.summary.scalar('bytes_in_use',
+        #     #                   tf.contrib.memory_stats.BytesInUse())
+        #     tf.compat.v1.summary.scalar('max_bytes',
+        #                       tf.contrib.memory_stats.MaxBytesInUse())
 
     def run_checkpoint_once(self, checkpoint_to_restore, sin_input_name=None, idx_repeat=None):
         """Evaluates network metrics once over all the validation samples.

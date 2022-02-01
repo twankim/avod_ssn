@@ -85,7 +85,7 @@ def get_configs_from_pipeline_file(pipeline_config_path,
         output_root_dir = os.path.join(output_dir,checkpoint_name)
     else:
         output_root_dir = avod.root_dir() + '/data/outputs/' + checkpoint_name
-    
+
     # Construct paths
     paths_config = model_config.paths_config
     if not paths_config.checkpoint_dir:

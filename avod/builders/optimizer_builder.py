@@ -76,9 +76,9 @@ def build(optimizer_config,
     if optimizer is None:
         raise ValueError('Optimizer %s not supported.' % optimizer_type)
 
-    if optimizer_config.use_moving_average:
-        optimizer = tf.contrib.opt.MovingAverageOptimizer(
-            optimizer, average_decay=optimizer_config.moving_average_decay)
+    # if optimizer_config.use_moving_average:
+    #     optimizer = tf.contrib.opt.MovingAverageOptimizer(
+    #         optimizer, average_decay=optimizer_config.moving_average_decay)
 
     return optimizer
 

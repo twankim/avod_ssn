@@ -12,21 +12,23 @@ EVAL_CKPTS='30'
 python avod/experiments/run_training.py \
         --pipeline_config=${CONFIG_MAIN} \
         --data_split='train' \
-        --output_dir=${OUTPUT_DIR}
+        # --output_dir=${OUTPUT_DIR}
 
 # Eval data on validation set (Clean)
 python avod/experiments/run_inference.py \
         --experiment_config=${CONFIG_MAIN} \
         --data_split='val' \
-        --output_dir=${OUTPUT_DIR} \
-        --ckpt_indices ${EVAL_CKPTS}
+        --ckpt_indices ${EVAL_CKPTS}        
+        # --output_dir=${OUTPUT_DIR} \
+
 
 # Eval data on validation set (SIN)
 python avod/experiments/run_inference.py \
         --experiment_config=${CONFIG_EVALSIN} \
         --data_split='val' \
-        --output_dir=${OUTPUT_DIR} \
-        --ckpt_indices ${EVAL_CKPTS}
+        --ckpt_indices ${EVAL_CKPTS}        
+        # --output_dir=${OUTPUT_DIR} \
+
 
 python ./utils_sin/sin_calc_avg_kitti_eval.py \
         --experiment_config=${CONFIG_EVALSIN} \

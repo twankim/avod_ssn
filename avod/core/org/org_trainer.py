@@ -92,11 +92,11 @@ def train(model, train_config):
     # This op can only be run on device with gpu
     # so it's skipped on travis
     is_travis = 'TRAVIS' in os.environ
-    if not is_travis:
-        # tf.compat.v1.summary.scalar('bytes_in_use',
-        #                   tf.contrib.memory_stats.BytesInUse())
-        tf.compat.v1.summary.scalar('max_bytes',
-                          tf.contrib.memory_stats.MaxBytesInUse())
+    # if not is_travis:
+    #     # tf.compat.v1.summary.scalar('bytes_in_use',
+    #     #                   tf.contrib.memory_stats.BytesInUse())
+    #     tf.compat.v1.summary.scalar('max_bytes',
+    #                       tf.contrib.memory_stats.MaxBytesInUse())
 
     summaries = set(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.SUMMARIES))
     summary_merged = summary_utils.summaries_to_keep(

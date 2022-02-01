@@ -378,8 +378,7 @@ def run_kitti_native_script(checkpoint_name, score_threshold, global_step,
     elif do_eval_ain:
         eval_script_dir += '_ain_{}_{}_{}'.format(
             sin_type, sin_level, sin_repeat)
-    make_script = eval_script_dir + \
-        '/kitti_native_eval/run_eval.sh'
+    make_script = './scripts/offline_eval/kitti_native_eval/run_eval.sh'
     script_folder = eval_script_dir + \
         '/kitti_native_eval/'
 

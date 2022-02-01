@@ -304,8 +304,7 @@ def run_kitti_native_script(checkpoint_name, score_threshold, global_step,
 
     eval_script_dir = os.path.join(output_dir,checkpoint_name) + \
         '/predictions'
-    make_script = eval_script_dir + \
-        '/kitti_native_eval/run_eval.sh'
+    make_script = './scripts/offline_eval/kitti_native_eval/run_eval.sh'
     script_folder = eval_script_dir + \
         '/kitti_native_eval/'
 

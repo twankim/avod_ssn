@@ -47,7 +47,7 @@ def main(_):
     default_pipeline_config_path = avod.root_dir() + \
         '/configs/avod_cars_example.config'
     default_data_split = 'train'
-    default_output_dir = '/data/kitti_avod/object/outputs'
+    default_output_dir = '../teams/DSC180A_FA21_A00/a15/avod_data/kitti_avod/object/outputs'
 
     parser.add_argument('--pipeline_config',
                         type=str,

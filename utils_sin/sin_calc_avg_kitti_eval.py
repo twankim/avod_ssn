@@ -269,7 +269,7 @@ def main(args):
     calc_avg_scores(args.output_dir,model_config,eval_config,dataset_config,args.data_split,iou05=True)
 
 def parse_args():
-    default_output_dir = '/data/kitti_avod/object/outputs'
+    default_output_dir = '../teams/DSC180A_FA21_A00/a15/avod_data/kitti_avod/object/outputs' #'/data/kitti_avod/object/outputs'
 
     parser = argparse.ArgumentParser()
 

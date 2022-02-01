@@ -85,7 +85,7 @@ def main(_):
     # --ckpt_indices=50 100 112
     # Optional arg:
     # --device=0
-    default_output_dir = '/data/kitti_avod/object/outputs'
+    default_output_dir = '../teams/DSC180A_FA21_A00/a15/avod_data/kitti_avod/object/outputs'
 
     # parser.add_argument('--checkpoint_name',
     #                     type=str,
