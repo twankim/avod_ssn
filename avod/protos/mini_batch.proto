@@ -7,6 +7,8 @@ message MiniBatchConfig {
 
     required MiniBatchRpnConfig rpn_config = 2;
     required MiniBatchAvodConfig avod_config = 3;
+
+    optional string mini_batch_dir = 4 [default = "../teams/DSC180A_FA21_A00/a15/avod_data/"];
 }
 
 message MiniBatchIouThresholds {

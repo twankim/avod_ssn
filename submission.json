@@ -1,0 +1,4 @@
+{
+    "dockerhub-id": "amytn:avod-adv:as-submodule",
+    "build-script": "git init && git submodule add https://github.com/amuamushu/avod_ssn.git && git submodule update --init --recursive && python3 run.py test"
+}

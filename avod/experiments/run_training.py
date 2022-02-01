@@ -1,10 +1,10 @@
 """Detection model trainer.
-
 This runs the DetectionModel trainer.
 """
 
 import argparse
 import os
+from sys import argv
 
 import tensorflow as tf
 
@@ -40,7 +40,7 @@ def train(model_config, train_config, dataset_config):
         trainer.train(model, train_config)
 
 
-def main(_):
+def main(args):
     parser = argparse.ArgumentParser()
 
     # Defaults
@@ -73,8 +73,7 @@ def main(_):
                         default=default_output_dir,
                         help='output dir to save checkpoints')
 
-    args = parser.parse_args()
-
+    args, unknown = parser.parse_known_args(args=args)
     # Parse pipeline config
     model_config, train_config, _, dataset_config = \
         config_builder.get_configs_from_pipeline_file(
@@ -92,4 +91,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-    tf.compat.v1.app.run()
+    tf.compat.v1.app.run(argv=argv)

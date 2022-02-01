@@ -1,11 +1,11 @@
 """Detection model inferencing.
-
 This runs the DetectionModel evaluator in test mode to output detections.
 """
 
 import argparse
 import os
 import sys
+from sys import argv
 
 import tensorflow as tf
 
@@ -76,7 +76,7 @@ def inference(model_config, eval_config,
             model_evaluator.run_latest_checkpoints(
                 force_sin_input_name=force_sin_input_name)
 
-def main(_):
+def main(args):
     parser = argparse.ArgumentParser()
 
     # Example usage
@@ -96,21 +96,21 @@ def main(_):
 
     parser.add_argument('--experiment_config',
                         type=str,
-                        required=True,
+                        # required=True,
                         dest='experiment_config_path',
                         help='Path to the experiment config must be specified')
 
     parser.add_argument('--data_split',
                         type=str,
                         dest='data_split',
-                        required=True,
+                        # required=True,
                         help='Data split must be specified e.g. val or test')
 
     parser.add_argument('--ckpt_indices',
                         type=int,
                         nargs='+',
                         dest='ckpt_indices',
-                        required=True,
+                        # required=True,
                         help='Checkpoint indices must be a set of \
                         integers with space in between -> 0 10 20 etc')
 
@@ -132,7 +132,7 @@ def main(_):
                         default=None,
                         help='force sin_input_name to run only for the given input')
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args(args=args)
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
@@ -159,4 +159,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-    tf.compat.v1.app.run()
+    tf.compat.v1.app.run(argv=argv)
