@@ -8,7 +8,7 @@ message KittiDatasetConfig {
     optional string name = 1 [default = "kitti"];
 
     // Top level directory of the dataset
-    optional string dataset_dir = 2 [default = "~/Kitti/object"];
+    optional string dataset_dir = 2 [default = "~/teams/DSC180A_FA21_A00/a15/avod_data/Kitti/object/"];
 
     // Split for the data (e.g. 'train', 'val')
     optional string data_split = 3 [default = "train"];
